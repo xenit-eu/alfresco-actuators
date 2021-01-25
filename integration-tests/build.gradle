@@ -1,0 +1,96 @@
+plugins {
+    id 'java'
+    id 'idea'
+}
+
+ext {
+    slf4jVersion = '1.7.25'
+    junitJupiterVersion = '5.4.2'
+    mockitoVersion = '2.27.0'
+    hamcrestVersion = '1.3'
+    restAssuredVersion = '4.0.0'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+}
+
+dependencies {
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:${junitJupiterVersion}"
+    testImplementation "org.mockito:mockito-core:${mockitoVersion}"
+    testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
+    testImplementation "org.hamcrest:hamcrest-all:${hamcrestVersion}"
+    testImplementation "io.rest-assured:rest-assured:${restAssuredVersion}"
+
+    testImplementation group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jVersion}"
+    testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: "${slf4jVersion}"
+}
+
+test {
+    // By default tests should only run in the subprojects. To manually run tests in your IDEA, uncomment:
+    enabled = false
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+
+    def alfrescoVersion = project.name[-2..-1]
+    apply from: "${project.projectDir}/overload.gradle"
+
+    description = "Alfresco ${alfrescoVersion} with Alfresco Actuators"
+
+    task integrationTest(type: Test, group: 'verification') {
+        useJUnitPlatform()
+        testLogging {
+            events "passed", "skipped", "failed"
+        }
+        testClassesDirs = project.parent.sourceSets.test.output.classesDirs
+        classpath = project.parent.sourceSets.test.runtimeClasspath
+        outputs.upToDateWhen { false }
+    }
+
+    check.dependsOn integrationTest
+
+    apply plugin: 'eu.xenit.docker-alfresco'
+    apply plugin: 'eu.xenit.docker-compose.auto'
+
+    dependencies {
+        baseAlfrescoWar "${alfrescoBaseWar}"
+        alfrescoAmp project(path: ":alfresco-actuators", configuration: "amp")
+
+        if(!(project.alfrescoShort.equals('52') || project.alfrescoShort.equals('60')))
+            alfrescoAmp "eu.xenit.alfresco:alfresco-hotfix-MNT-20557:1.0.2"
+
+        /* start DE version */
+        alfrescoAmp "eu.xenit:alfresco-dynamic-extensions-repo-${project.alfrescoShort}:2.0.3@amp"
+        alfrescoDE project(path: ':alfresco-actuators', configuration: 'allOsgi')
+        /* end DE version */
+    }
+
+    dockerAlfresco {
+        baseImage = "${alfrescoBaseImage}"
+        leanImage = true
+
+        dockerBuild {
+            repository = "hub.xenit.eu/alfresco-actuators/alfresco-actuators-${alfrescoVersion}"
+            tags = ["${version}"]
+            automaticTags = false
+        }
+    }
+
+    dockerCompose {
+        useComposeFiles = [
+                '../src/test/resources/compose/docker-compose.yml'
+        ]
+
+        isRequiredBy integrationTest
+
+        // expose alfresco/inflow on a random port, comment to use default port (8080)
+        environment.put 'ALFRESCO_TCP_8080', '8080'
+    }
+}

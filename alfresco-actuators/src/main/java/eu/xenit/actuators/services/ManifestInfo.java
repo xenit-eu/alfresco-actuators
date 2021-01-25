@@ -1,0 +1,61 @@
+package eu.xenit.actuators.services;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.servlet.ServletContext;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.TreeMap;
+
+public class ManifestInfo {
+
+    private static Logger LOGGER = LoggerFactory.getLogger(ManifestInfo.class);
+
+    private static ManifestInfo instance;
+
+    private ManifestInfo() {
+    }
+
+    public static ManifestInfo getInstance() {
+        if (instance == null) {
+            instance = new ManifestInfo();
+        }
+        return instance;
+    }
+
+    private Map<String, String> manifestProperties;
+
+    public Map<String, String> getManifestProperties() {
+        if (manifestProperties == null || manifestProperties.isEmpty()) {
+            LOGGER.error("Requesting MANIFEST properties but these are not (yet) set");
+        }
+        return manifestProperties;
+    }
+
+    public void setManifestProperties(final ServletContext servletContext) {
+        if (manifestProperties != null && !manifestProperties.isEmpty()) {
+            LOGGER.debug("MANIFEST properties already loaded");
+        }
+
+        final String name = "/META-INF/MANIFEST.MF";
+        final Properties props = new Properties();
+        try {
+            props.load(servletContext.getResourceAsStream(name));
+
+
+            manifestProperties = new TreeMap<>();
+
+            for (Entry<Object,Object> entry : props.entrySet()) {
+                manifestProperties.put(entry.getKey().toString(),entry.getValue().toString());
+            }
+            if (manifestProperties.isEmpty()) {
+                LOGGER.debug("MANIFEST info set but still empty");
+            }
+        } catch (final IOException e) {
+            LOGGER.error("Unable to retrieve MANIFEST properties", e);
+        }
+    }
+}
