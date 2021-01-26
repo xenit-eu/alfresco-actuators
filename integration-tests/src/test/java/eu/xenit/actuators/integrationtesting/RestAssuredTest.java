@@ -11,9 +11,6 @@ public abstract class RestAssuredTest {
 
     private static final Logger logger = LoggerFactory.getLogger(RestAssuredTest.class);
 
-    private static final String ALFRESCO_USERNAME = "admin";
-    private static final String ALFRESCO_PASSWORD = "admin";
-
     @BeforeAll
     public static void initializeRestAssured() {
         logger.info("Initializing REST-Assured for smoke tests");

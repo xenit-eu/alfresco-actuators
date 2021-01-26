@@ -34,5 +34,5 @@ Output contains information about:
 
 ## Integration tests
 
-To be implemented.
+    ./gradlew integrationTest
 
