@@ -1,9 +1,9 @@
 package eu.xenit.actuators.services;
 
-import eu.xenit.actuators.system.model.gen.AlfrescoInfo;
-import eu.xenit.actuators.system.model.gen.LicenseInfo;
-import eu.xenit.actuators.system.model.gen.ModuleInfo;
-import eu.xenit.actuators.system.model.gen.StatusInfo;
+import eu.xenit.actuators.model.gen.AlfrescoInfo;
+import eu.xenit.actuators.model.gen.LicenseInfo;
+import eu.xenit.actuators.model.gen.ModuleInfo;
+import eu.xenit.actuators.model.gen.StatusInfo;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.ServiceRegistry;

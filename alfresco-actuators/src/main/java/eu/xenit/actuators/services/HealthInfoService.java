@@ -1,6 +1,6 @@
 package eu.xenit.actuators.services;
 
-import eu.xenit.actuators.system.model.gen.HealthInfo;
+import eu.xenit.actuators.model.gen.HealthInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

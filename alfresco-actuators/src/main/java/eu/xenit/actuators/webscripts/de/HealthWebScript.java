@@ -3,7 +3,7 @@ package eu.xenit.actuators.webscripts.de;
 import com.github.dynamicextensionsalfresco.webscripts.annotations.*;
 import eu.xenit.actuators.services.HealthInfoService;
 import eu.xenit.actuators.services.ManifestInfo;
-import eu.xenit.actuators.system.model.gen.HealthInfo;
+import eu.xenit.actuators.model.gen.HealthInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

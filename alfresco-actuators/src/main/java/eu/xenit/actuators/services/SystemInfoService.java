@@ -1,9 +1,9 @@
 package eu.xenit.actuators.services;
 
-import eu.xenit.actuators.system.model.gen.CpuInfo;
-import eu.xenit.actuators.system.model.gen.JavaInfo;
-import eu.xenit.actuators.system.model.gen.OperatingSystemInfo;
-import eu.xenit.actuators.system.model.gen.SystemInfo;
+import eu.xenit.actuators.model.gen.CpuInfo;
+import eu.xenit.actuators.model.gen.JavaInfo;
+import eu.xenit.actuators.model.gen.OperatingSystemInfo;
+import eu.xenit.actuators.model.gen.SystemInfo;
 import org.springframework.stereotype.Service;
 
 import java.lang.management.GarbageCollectorMXBean;
