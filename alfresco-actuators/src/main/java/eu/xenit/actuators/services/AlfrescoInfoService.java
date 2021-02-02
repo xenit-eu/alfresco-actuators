@@ -79,7 +79,7 @@ public class AlfrescoInfoService {
                 .edition(edition)
                 .license(license)
                 .modules(this.retrieveAlfrescoModules())
-                .globalProperties(this.retrievePropertiesFiltered())
+//                .globalProperties(this.retrievePropertiesFiltered())
                 .status(this.retrieveStatusInfo());
     }
 
@@ -98,6 +98,7 @@ public class AlfrescoInfoService {
         return ManifestInfo.getInstance().getManifestProperties();
     }
 
+    // Not used
     private Map<String, String> retrievePropertiesFiltered() {
         final String PROP_STARTS_WITH = "prefix.properties.filtered";
 
@@ -168,7 +169,6 @@ public class AlfrescoInfoService {
         return statusInfo;
 
     }
-
 
     private List<ModuleInfo> retrieveAlfrescoModules() {
 
