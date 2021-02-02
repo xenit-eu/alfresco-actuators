@@ -1,2 +1,2 @@
-${healthInfo}
+{"status":"${health}"}
 

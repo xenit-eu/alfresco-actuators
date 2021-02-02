@@ -1,9 +1,12 @@
 package eu.xenit.actuators.services;
 
+import eu.xenit.actuators.HealthIndicator;
 import eu.xenit.actuators.model.gen.CpuInfo;
 import eu.xenit.actuators.model.gen.JavaInfo;
 import eu.xenit.actuators.model.gen.OperatingSystemInfo;
 import eu.xenit.actuators.model.gen.SystemInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.lang.management.GarbageCollectorMXBean;
@@ -17,7 +20,8 @@ import java.util.TreeMap;
 
 
 @Service
-public class SystemInfoService {
+public class SystemInfoService implements HealthIndicator {
+    private static final Logger logger = LoggerFactory.getLogger(HealthIndicator.class);
 
     SystemInfo getSystemInfo() {
         return new SystemInfo()
@@ -68,5 +72,11 @@ public class SystemInfoService {
         OperatingSystemMXBean osMXBean = ManagementFactory.getOperatingSystemMXBean();
         return new CpuInfo()
                 .processors(osMXBean.getAvailableProcessors());
+    }
+
+    @Override
+    public boolean isHealthy() {
+        getSystemInfo();
+        return true;
     }
 }

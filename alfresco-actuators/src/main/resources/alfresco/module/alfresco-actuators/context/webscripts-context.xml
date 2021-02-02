@@ -4,8 +4,6 @@
 
     <bean id="webscript.eu.xenit.actuators.webscripts.health.get"
           class="eu.xenit.actuators.webscripts.classical.HealthWebScript"
-          parent="webscript">
-        <constructor-arg ref="ServerInfoService"/>
-    </bean>
+          parent="webscript" />
 
 </beans>

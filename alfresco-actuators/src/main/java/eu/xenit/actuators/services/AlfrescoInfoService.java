@@ -1,5 +1,6 @@
 package eu.xenit.actuators.services;
 
+import eu.xenit.actuators.HealthIndicator;
 import eu.xenit.actuators.model.gen.AlfrescoInfo;
 import eu.xenit.actuators.model.gen.LicenseInfo;
 import eu.xenit.actuators.model.gen.ModuleInfo;
@@ -28,7 +29,7 @@ import java.util.*;
 
 
 @Service
-public class AlfrescoInfoService {
+public class AlfrescoInfoService implements HealthIndicator {
 
     private static final Logger logger = LoggerFactory.getLogger(AlfrescoInfoService.class);
 
@@ -62,15 +63,12 @@ public class AlfrescoInfoService {
         String version = null;
         String edition = null;
         LicenseInfo license = null;
-        // descriptorService not available in the DE version for alfresco 52 and alfresco 60
-        if(descriptorService!=null) {
-            Descriptor serverDescriptor = descriptorService.getServerDescriptor();
-            Descriptor repositoryDescriptor = descriptorService.getCurrentRepositoryDescriptor();
-            id = repositoryDescriptor.getId();
-            version = serverDescriptor.getVersion();
-            edition = serverDescriptor.getEdition();
-            license = retrieveLicenseInfo();
-        }
+        Descriptor serverDescriptor = descriptorService.getServerDescriptor();
+        Descriptor repositoryDescriptor = descriptorService.getCurrentRepositoryDescriptor();
+        id = repositoryDescriptor.getId();
+        version = serverDescriptor.getVersion();
+        edition = serverDescriptor.getEdition();
+        license = retrieveLicenseInfo();
 
         return new AlfrescoInfo()
                 .id(id)
@@ -128,8 +126,10 @@ public class AlfrescoInfoService {
         }
         LicenseDescriptor licenseDescriptor = descriptorService.getLicenseDescriptor();
 
-        if(licenseService == null || licenseDescriptor == null)
-            return null;
+        // community
+        if(licenseService == null || licenseDescriptor == null) {
+           return null;
+        }
 
         return new LicenseInfo()
                 .valid(licenseService.isLicenseValid())
@@ -188,5 +188,11 @@ public class AlfrescoInfoService {
                 .description(moduleDetails.getDescription())
                 .installState(moduleDetails.getInstallState().toString())
                 .version(moduleDetails.getProperties().getProperty(ModuleDetails.PROP_VERSION));
+    }
+
+    @Override
+    public boolean isHealthy() {
+        getAlfrescoInfo();
+        return true;
     }
 }
