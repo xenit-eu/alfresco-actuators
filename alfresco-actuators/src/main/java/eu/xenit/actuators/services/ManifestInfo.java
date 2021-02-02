@@ -12,7 +12,7 @@ import java.util.TreeMap;
 
 public class ManifestInfo {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(ManifestInfo.class);
+    private static Logger logger = LoggerFactory.getLogger(ManifestInfo.class);
 
     private static ManifestInfo instance;
 
@@ -30,14 +30,14 @@ public class ManifestInfo {
 
     public Map<String, String> getManifestProperties() {
         if (manifestProperties == null || manifestProperties.isEmpty()) {
-            LOGGER.error("Requesting MANIFEST properties but these are not (yet) set");
+            logger.error("Requesting MANIFEST properties but these are not (yet) set");
         }
         return manifestProperties;
     }
 
     public void setManifestProperties(final ServletContext servletContext) {
         if (manifestProperties != null && !manifestProperties.isEmpty()) {
-            LOGGER.debug("MANIFEST properties already loaded");
+            logger.debug("MANIFEST properties already loaded");
         }
 
         final String name = "/META-INF/MANIFEST.MF";
@@ -52,10 +52,10 @@ public class ManifestInfo {
                 manifestProperties.put(entry.getKey().toString(),entry.getValue().toString());
             }
             if (manifestProperties.isEmpty()) {
-                LOGGER.debug("MANIFEST info set but still empty");
+                logger.debug("MANIFEST info set but still empty");
             }
         } catch (final IOException e) {
-            LOGGER.error("Unable to retrieve MANIFEST properties", e);
+            logger.error("Unable to retrieve MANIFEST properties", e);
         }
     }
 }
