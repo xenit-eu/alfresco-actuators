@@ -65,11 +65,6 @@ subprojects {
 
         if(!(project.alfrescoShort.equals('52') || project.alfrescoShort.equals('60')))
             alfrescoAmp "eu.xenit.alfresco:alfresco-hotfix-MNT-20557:1.0.2"
-
-        /* start DE version */
-        alfrescoAmp "eu.xenit:alfresco-dynamic-extensions-repo-${project.alfrescoShort}:2.0.3@amp"
-        alfrescoDE project(path: ':alfresco-actuators', configuration: 'allOsgi')
-        /* end DE version */
     }
 
     dockerAlfresco {

@@ -3,39 +3,11 @@ plugins {
     id 'eu.xenit.alfresco' version "1.0.1"
     id 'eu.xenit.amp' version "1.0.1"
     id 'org.hidetake.swagger.generator' version '2.11.0'
-    id 'eu.xenit.de' version "2.0.1"
     id "com.github.johnrengelman.shadow" version "5.1.0"
 }
 
 description = "Xenit webscripts to retrieve health of the application"
 group = 'eu.xenit.alfresco-actuators'
-
-/* start DE version */
-import aQute.bnd.gradle.Bundle
-
-configurations {
-    allOsgi
-}
-
-task shadowJarManifest(type: Bundle, dependsOn: shadowJar) {
-    from zipTree(shadowJar.archiveFile)
-    classifier("all-osgi")
-    bnd (
-            "Bundle-Name": "alfresco-actuators",
-            "Bundle-SymbolicName": "alfresco-actuators",
-            "Bundle-Version": project.version,
-            "Alfresco-Dynamic-Extension": "true",
-            'Alfresco-Spring-Configuration': 'eu.xenit.actuators',
-            'Import-Package': '!org.relaxng.datatype,!org.joda.convert,!com.sun.msv.*,!com.google.apphosting.api,!com.google.appengine.api,*',
-            'DynamicImport-Package': '*'
-    )
-
-}
-
-artifacts {
-    allOsgi shadowJarManifest
-}
-/* end start DE version */
 
 // compile against alfresco 5.2
 ext {
@@ -66,8 +38,6 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.0'
     compile("javax.annotation:javax.annotation-api:1.3.2")
 
-    allOsgi 'io.swagger:swagger-annotations:1.5.6'
-    allOsgi 'javax.validation:validation-api:1.1.0.Final'
 }
 
 swaggerSources {
