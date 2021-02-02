@@ -1,22 +1,24 @@
 # Alfresco actuators
 
-Health endpoint, unauthenticated, to be used as load balancers checks and http checks for alerting.
+Health endpoint, unauthenticated, to be used as docker and load balancer health check.
 
-Currently there are 2 endpoints implemented:
-
-* A classical webscript:
+The webscript is available at:
 
     alfresco/s/xenit/actuators/health
-
-* A dynamic-extension based REST endpoint:
-
-    alfresco/s/xenit/api/v1/health/information
 
 ## Usage
 
 Status code is to be used for the health check.
 
-Output contains information about:
+The output of the check is:
+
+    {"status":"UP"}
+
+or
+
+    {"status":"DOWN"}
+
+Currently the check looks at:
 
 * system
   * os
@@ -29,10 +31,9 @@ Output contains information about:
   * license
   * warManifest
   * modules
-  * globalProperties (filtered)
   * status
 
-## Integration tests
+## How to run integration tests
 
     ./gradlew integrationTest
 
