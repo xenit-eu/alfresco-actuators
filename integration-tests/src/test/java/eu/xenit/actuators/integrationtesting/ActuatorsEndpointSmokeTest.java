@@ -7,23 +7,6 @@ import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ActuatorsEndpointSmokeTest extends RestAssuredTest {
-
-    @Test
-    void testDEEndpoint() {
-        final Object os = given()
-                .log().ifValidationFails()
-                .when()
-                .get("/s/xenit/api/v1/health/information")
-                .then()
-                .log().ifValidationFails()
-                .statusCode(200)
-                .extract()
-                .jsonPath()
-                .get("system.os.name");
-
-        assertEquals(os,"Linux");
-    }
-
     @Test
     void testClassicalEndpoint() {
         final String healthInfo = given()
@@ -33,7 +16,7 @@ class ActuatorsEndpointSmokeTest extends RestAssuredTest {
                 .then()
                 .log().ifValidationFails()
                 .statusCode(200)
-                .body(containsString("Linux"))
+                .body(containsString("{\"status\":\"UP\"}"))
                 .toString();
     }
 
