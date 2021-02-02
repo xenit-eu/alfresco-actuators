@@ -7,4 +7,4 @@ title: Changelog - Alfresco Actuators
 
 ### Added
 
-* [PR #1](https://github.com/xenit-eu/alfresco-actuators/pull/1) First iteration
+* [PR #1](https://github.com/xenit-eu/alfresco-actuators/pull/1) Added /xenit/actuators/health endpoint
