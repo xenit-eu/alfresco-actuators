@@ -1,4 +1,4 @@
-rootProject.name = 'alfred-telemetry'
+rootProject.name = 'alfresco-actuators'
 
 // Alfresco Actuators implementation
 include ':alfresco-actuators'
