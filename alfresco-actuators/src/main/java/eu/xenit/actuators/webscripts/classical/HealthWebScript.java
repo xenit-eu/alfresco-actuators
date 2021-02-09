@@ -33,7 +33,7 @@ public class HealthWebScript extends DeclarativeWebScript {
         model.put("health", "UP");
 
 
-        LinkedHashMap<String, HealthIndicator> indicators = (LinkedHashMap) applicationContext.getBeansOfType(HealthIndicator.class);
+        Map<String, HealthIndicator> indicators = (Map) applicationContext.getBeansOfType(HealthIndicator.class);
         for (HealthIndicator indicator : indicators.values()) {
             try {
                 indicator.isHealthy();
