@@ -1,5 +1,6 @@
 package eu.xenit.actuators.services;
 
+import eu.xenit.actuators.Health;
 import eu.xenit.actuators.HealthIndicator;
 import eu.xenit.actuators.model.gen.CpuInfo;
 import eu.xenit.actuators.model.gen.JavaInfo;
@@ -13,10 +14,7 @@ import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.lang.management.RuntimeMXBean;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 
 @Service
@@ -75,8 +73,16 @@ public class SystemInfoService implements HealthIndicator {
     }
 
     @Override
-    public boolean isHealthy() {
-        getSystemInfo();
-        return true;
+    public Health isHealthy() {
+        Health health = new Health();
+        try {
+            SystemInfo systemInfo = getSystemInfo();
+            health.setStatus("UP");
+            health.setDetails(Collections.singletonMap("output",systemInfo.toString()));
+        } catch (Exception e) {
+            health.setStatus("DOWN");
+            health.setDetails(Collections.singletonMap("error",e.getMessage()));
+        }
+        return health;
     }
 }

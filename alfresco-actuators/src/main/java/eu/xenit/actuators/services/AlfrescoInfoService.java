@@ -1,5 +1,6 @@
 package eu.xenit.actuators.services;
 
+import eu.xenit.actuators.Health;
 import eu.xenit.actuators.HealthIndicator;
 import eu.xenit.actuators.model.gen.AlfrescoInfo;
 import eu.xenit.actuators.model.gen.LicenseInfo;
@@ -191,8 +192,16 @@ public class AlfrescoInfoService implements HealthIndicator {
     }
 
     @Override
-    public boolean isHealthy() {
-        getAlfrescoInfo();
-        return true;
+    public Health isHealthy() {
+        Health health = new Health();
+        try {
+            AlfrescoInfo alfrescoInfo = getAlfrescoInfo();
+            health.setStatus("UP");
+            health.setDetails(Collections.singletonMap("output",alfrescoInfo.toString()));
+        } catch (Exception e) {
+            health.setStatus("DOWN");
+            health.setDetails(Collections.singletonMap("error",e.getMessage()));
+        }
+        return health;
     }
 }
