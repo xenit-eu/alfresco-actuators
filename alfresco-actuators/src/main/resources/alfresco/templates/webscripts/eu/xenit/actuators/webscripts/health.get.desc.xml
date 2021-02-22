@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Alfresco Actuator</shortname>
+    <description>Health endpoint for Alfresco</description>
+    <url>/xenit/actuators/health</url>
+    <authentication>none</authentication>
+    <format default="json"/>
+    <family>Alfresco Actuators</family>
+</webscript>

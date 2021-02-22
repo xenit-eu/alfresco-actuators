@@ -1,0 +1,10 @@
+rootProject.name = 'alfresco-actuators'
+
+// Alfresco Actuators implementation
+include ':alfresco-actuators'
+
+include ':integration-tests'
+["52", "60", "61"].each { version ->
+    include ":integration-tests:alfresco-community-${version}"
+    include ":integration-tests:alfresco-enterprise-${version}"
+}
