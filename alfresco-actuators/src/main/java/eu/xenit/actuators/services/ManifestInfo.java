@@ -38,6 +38,7 @@ public class ManifestInfo {
     public void setManifestProperties(final ServletContext servletContext) {
         if (manifestProperties != null && !manifestProperties.isEmpty()) {
             logger.debug("MANIFEST properties already loaded");
+            return;
         }
 
         final String name = "/META-INF/MANIFEST.MF";
