@@ -6,6 +6,8 @@ on:
     tags:
       - v*
   pull_request:
+env:
+  GRADLE_OPTS: "-Dorg.gradle.project.org.alfresco.artifacts.username=${{ secrets.ALFRESCO_NEXUS_USERNAME }} -Dorg.gradle.project.org.alfresco.artifacts.password=${{ secrets.ALFRESCO_NEXUS_PASSWORD }}"
 jobs:
   test:
     runs-on: ubuntu-latest
