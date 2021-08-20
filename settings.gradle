@@ -1,10 +1,13 @@
+plugins {
+    id 'eu.xenit.enterprise-conventions.oss' version '0.2.0'
+}
 rootProject.name = 'alfresco-actuators'
 
 // Alfresco Actuators implementation
 include ':alfresco-actuators'
 
 include ':integration-tests'
-["52", "60", "61"].each { version ->
+["52", "60", "61", "62"].each { version ->
     include ":integration-tests:alfresco-community-${version}"
     include ":integration-tests:alfresco-enterprise-${version}"
 }
