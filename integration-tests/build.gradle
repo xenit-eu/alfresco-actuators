@@ -59,23 +59,28 @@ subprojects {
     apply plugin: 'eu.xenit.docker-alfresco'
     apply plugin: 'eu.xenit.docker-compose.auto'
 
+    configurations {
+        sharedLib
+    }
+
     dependencies {
         baseAlfrescoWar "${alfrescoBaseWar}"
         alfrescoAmp project(path: ":alfresco-actuators", configuration: "amp")
 
-        if(!(project.alfrescoShort.equals('52') || project.alfrescoShort.equals('60')))
+        if (alfrescoBaseImage.contains("alfresco-repository-skeleton"))
+            sharedLib 'org.postgresql:postgresql:42.2.6'
+
+        if (!(project.alfrescoShort.equals('52') || project.alfrescoShort.equals('60')))
             alfrescoAmp "eu.xenit.alfresco:alfresco-hotfix-MNT-20557:1.0.2"
     }
 
     dockerAlfresco {
         baseImage = "${alfrescoBaseImage}"
-        leanImage = true
+        leanImage = !alfrescoBaseImage.contains("alfresco-repository-skeleton")
+    }
 
-        dockerBuild {
-            repository = "hub.xenit.eu/alfresco-actuators/alfresco-actuators-${alfrescoVersion}"
-            tags = ["${version}"]
-            automaticTags = false
-        }
+    createDockerFile {
+        smartCopy(configurations.sharedLib, '${CATALINA_HOME}/shared/lib/')
     }
 
     dockerCompose {
