@@ -6,6 +6,12 @@ import eu.xenit.actuators.model.gen.AlfrescoInfo;
 import eu.xenit.actuators.model.gen.LicenseInfo;
 import eu.xenit.actuators.model.gen.ModuleInfo;
 import eu.xenit.actuators.model.gen.StatusInfo;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.TreeMap;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.ServiceRegistry;
@@ -25,9 +31,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import java.util.*;
-
 
 @Service
 public class AlfrescoInfoService implements HealthIndicator {
@@ -36,7 +39,8 @@ public class AlfrescoInfoService implements HealthIndicator {
 
     @Autowired
     private ServiceRegistry serviceRegistry;
-    @Resource(name="DescriptorService")
+    @Autowired
+    @Qualifier("DescriptorService")
     private DescriptorService descriptorService;
     @Autowired
     private ModuleService moduleService;
