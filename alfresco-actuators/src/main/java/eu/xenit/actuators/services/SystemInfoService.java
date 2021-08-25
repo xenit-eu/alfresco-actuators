@@ -6,15 +6,18 @@ import eu.xenit.actuators.model.gen.CpuInfo;
 import eu.xenit.actuators.model.gen.JavaInfo;
 import eu.xenit.actuators.model.gen.OperatingSystemInfo;
 import eu.xenit.actuators.model.gen.SystemInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.lang.management.RuntimeMXBean;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 
 @Service
