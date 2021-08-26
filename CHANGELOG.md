@@ -3,6 +3,12 @@ title: Changelog - Alfresco Actuators
 
 # Alfresco Actuators Changelog
 
+## [0.2.0] - 2021-08-20
+
+### Fixed
+
+* [ISSUE #4](https://github.com/xenit-eu/alfresco-actuators/issues/4) Classpath conflict between jsr250 and javax-annotations
+
 ## [0.1.0] - 2021-08-20
 
 ### Fixed

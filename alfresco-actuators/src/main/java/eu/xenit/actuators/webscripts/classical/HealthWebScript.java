@@ -3,6 +3,9 @@ package eu.xenit.actuators.webscripts.classical;
 import eu.xenit.actuators.Health;
 import eu.xenit.actuators.HealthIndicator;
 import eu.xenit.actuators.services.ManifestInfo;
+import java.util.HashMap;
+import java.util.Map;
+import javax.servlet.ServletContext;
 import org.alfresco.service.cmr.security.AuthenticationService;
 import org.alfresco.service.cmr.security.PermissionService;
 import org.slf4j.Logger;
@@ -14,10 +17,6 @@ import org.springframework.extensions.webscripts.DeclarativeWebScript;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.servlet.WebScriptServletRequest;
-
-import javax.servlet.ServletContext;
-import java.util.HashMap;
-import java.util.Map;
 
 public class HealthWebScript extends DeclarativeWebScript {
 
