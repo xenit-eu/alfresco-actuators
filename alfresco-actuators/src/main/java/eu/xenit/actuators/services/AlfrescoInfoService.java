@@ -37,6 +37,8 @@ public class AlfrescoInfoService implements HealthIndicator {
 
     private static final Logger logger = LoggerFactory.getLogger(AlfrescoInfoService.class);
 
+    public static final String GLOBAL_HEALTH_ON_READONLY = "eu.xenit.actuators.repository.healthyOnReadOnly";
+
     @Autowired
     private ServiceRegistry serviceRegistry;
     @Autowired
@@ -44,7 +46,7 @@ public class AlfrescoInfoService implements HealthIndicator {
     private DescriptorService descriptorService;
     @Autowired
     private ModuleService moduleService;
-    @Autowired(required=false)
+    @Autowired(required = false)
     private LicenseService licenseService;
     @Autowired
     @Qualifier("global-properties")
@@ -59,7 +61,6 @@ public class AlfrescoInfoService implements HealthIndicator {
     private ThumbnailService thumbnailService;
     @Autowired
     private RetryingTransactionHelper retryingTransactionHelper;
-
 
     AlfrescoInfo getAlfrescoInfo() {
 
@@ -113,11 +114,11 @@ public class AlfrescoInfoService implements HealthIndicator {
 
         Map<String, String> map = new TreeMap<>();
 
-        for (Map.Entry<Object,Object> entry : globalProperties.entrySet()) {
+        for (Map.Entry<Object, Object> entry : globalProperties.entrySet()) {
             String key = entry.getKey().toString();
             if (key.startsWith(propsShouldStartWith)
                     && !map.containsKey(key)) { // the first wins
-                map.put(key,entry.getValue().toString());
+                map.put(key, entry.getValue().toString());
             }
         }
 
@@ -126,14 +127,14 @@ public class AlfrescoInfoService implements HealthIndicator {
 
 
     private LicenseInfo retrieveLicenseInfo() {
-        if(licenseService==null) {
-            licenseService=appContext.getBeansOfType(LicenseService.class).get("licenseService");
+        if (licenseService == null) {
+            licenseService = appContext.getBeansOfType(LicenseService.class).get("licenseService");
         }
         LicenseDescriptor licenseDescriptor = descriptorService.getLicenseDescriptor();
 
         // community
-        if(licenseService == null || licenseDescriptor == null) {
-           return null;
+        if (licenseService == null || licenseDescriptor == null) {
+            return null;
         }
 
         return new LicenseInfo()
@@ -169,7 +170,7 @@ public class AlfrescoInfoService implements HealthIndicator {
                 }, AuthenticationUtil.getAdminUserName());
                 return null;
             }
-        },true);
+        }, true);
 
         return statusInfo;
 
@@ -180,7 +181,7 @@ public class AlfrescoInfoService implements HealthIndicator {
         List<ModuleDetails> allModules = moduleService.getAllModules();
         List<ModuleInfo> list = new ArrayList<>(allModules.size());
 
-        for(ModuleDetails details : allModules) {
+        for (ModuleDetails details : allModules) {
             list.add(toAlfrescoModule(details));
         }
 
@@ -200,11 +201,16 @@ public class AlfrescoInfoService implements HealthIndicator {
         Health health = new Health();
         try {
             AlfrescoInfo alfrescoInfo = getAlfrescoInfo();
+            health.setDetails(Collections.singletonMap("output", alfrescoInfo.toString()));
+            boolean healthyOnReadonly = Boolean.parseBoolean(
+                    (String) globalProperties.getOrDefault(GLOBAL_HEALTH_ON_READONLY, "true"));
+            if (!healthyOnReadonly && alfrescoInfo.getStatus().getReadOnly()) {
+                throw new RuntimeException("Alfresco is in readonly. Handling as down.");
+            }
             health.setStatus("UP");
-            health.setDetails(Collections.singletonMap("output",alfrescoInfo.toString()));
         } catch (Exception e) {
             health.setStatus("DOWN");
-            health.setDetails(Collections.singletonMap("error",e.getMessage()));
+            health.setDetails(Collections.singletonMap("error", e.getMessage()));
         }
         return health;
     }
