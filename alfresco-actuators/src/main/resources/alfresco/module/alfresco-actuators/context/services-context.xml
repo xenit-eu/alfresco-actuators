@@ -9,4 +9,12 @@
     <bean id="AlfrescoInfoService"
           class="eu.xenit.actuators.services.AlfrescoInfoService">
     </bean>
+
+    <bean id="LicenseInfoService"
+        class="eu.xenit.actuators.services.LicenseInfoService">
+    </bean>
+
+    <bean id="StatusInfoService"
+        class="eu.xenit.actuators.services.StatusInfoService">
+    </bean>
 </beans>

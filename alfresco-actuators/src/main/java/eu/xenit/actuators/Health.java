@@ -3,14 +3,18 @@ package eu.xenit.actuators;
 import java.util.Map;
 
 public class Health {
-    String status;
+
+    public static final String KEY_OUTPUT = "output";
+    public static final String KEY_ERROR = "error";
+
+    HealthStatus status;
     Map<String, String> details;
 
-    public String getStatus() {
+    public HealthStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(HealthStatus status) {
         this.status = status;
     }
 
