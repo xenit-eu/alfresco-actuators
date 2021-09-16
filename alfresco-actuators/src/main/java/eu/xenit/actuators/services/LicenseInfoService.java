@@ -60,9 +60,9 @@ public class LicenseInfoService implements HealthIndicator {
             LicenseInfo licenseInfo = retrieveLicenseInfo();
             health.setDetails(Collections.singletonMap(KEY_OUTPUT, licenseInfo.toString()));
             health.setStatus(HealthStatus.UP);
-        } catch (Exception healthException) {
+        } catch (Exception exception) {
             health.setStatus(HealthStatus.DOWN);
-            health.setDetails(Collections.singletonMap(KEY_ERROR, healthException.getMessage()));
+            health.setDetails(Collections.singletonMap(KEY_ERROR, exception.getMessage()));
         }
         return health;
     }

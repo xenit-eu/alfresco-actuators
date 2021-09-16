@@ -6,7 +6,6 @@ import static eu.xenit.actuators.Health.KEY_OUTPUT;
 import eu.xenit.actuators.Health;
 import eu.xenit.actuators.HealthIndicator;
 import eu.xenit.actuators.HealthStatus;
-import eu.xenit.actuators.exceptions.HealthException;
 import eu.xenit.actuators.model.gen.StatusInfo;
 import java.util.Collections;
 import java.util.Properties;
@@ -71,12 +70,14 @@ public class StatusInfoService implements HealthIndicator {
             boolean healthyOnReadonly = Boolean.parseBoolean(
                     (String) globalProperties.getOrDefault(GLOBAL_HEALTH_ON_READONLY, "true"));
             if (!healthyOnReadonly && statusInfo.getReadOnly()) {
-                throw new HealthException("Alfresco is in readonly. Handling as down.");
+                health.setStatus(HealthStatus.DOWN);
+                health.setDetails(Collections.singletonMap(KEY_ERROR, "Alfresco is in readonly. Handling as down."));
+            } else {
+                health.setStatus(HealthStatus.UP);
             }
-            health.setStatus(HealthStatus.UP);
-        } catch (Exception healthException) {
+        } catch (Exception exception) {
             health.setStatus(HealthStatus.DOWN);
-            health.setDetails(Collections.singletonMap(KEY_ERROR, healthException.getMessage()));
+            health.setDetails(Collections.singletonMap(KEY_ERROR, exception.getMessage()));
         }
         return health;
     }
