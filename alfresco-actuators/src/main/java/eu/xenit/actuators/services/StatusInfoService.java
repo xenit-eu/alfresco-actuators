@@ -25,8 +25,6 @@ public class StatusInfoService implements HealthIndicator {
 
     private static final Logger logger = LoggerFactory.getLogger(StatusInfoService.class);
 
-    public static final String GLOBAL_HEALTH_ON_READONLY = "eu.xenit.actuators.repository.healthyOnReadOnly";
-
     @Autowired
     private RepoAdminService repoAdminService;
     @Autowired
@@ -37,10 +35,10 @@ public class StatusInfoService implements HealthIndicator {
     private RetryingTransactionHelper retryingTransactionHelper;
     @Autowired
     @Qualifier("global-properties")
-    private Properties globalProperties;
+    protected Properties globalProperties;
 
     // needs authentication
-    private StatusInfo retrieveStatusInfo() {
+    protected StatusInfo retrieveStatusInfo() {
         final StatusInfo statusInfo = new StatusInfo();
         retryingTransactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
             @Override
@@ -67,14 +65,7 @@ public class StatusInfoService implements HealthIndicator {
         try {
             StatusInfo statusInfo = retrieveStatusInfo();
             health.setDetails(Collections.singletonMap(KEY_OUTPUT, statusInfo.toString()));
-            boolean healthyOnReadonly = Boolean.parseBoolean(
-                    (String) globalProperties.getOrDefault(GLOBAL_HEALTH_ON_READONLY, "true"));
-            if (!healthyOnReadonly && statusInfo.getReadOnly()) {
-                health.setStatus(HealthStatus.DOWN);
-                health.setDetails(Collections.singletonMap(KEY_ERROR, "Alfresco is in readonly. Handling as down."));
-            } else {
-                health.setStatus(HealthStatus.UP);
-            }
+            health.setStatus(HealthStatus.UP);
         } catch (Exception exception) {
             health.setStatus(HealthStatus.DOWN);
             health.setDetails(Collections.singletonMap(KEY_ERROR, exception.getMessage()));

@@ -6,6 +6,7 @@ public class Health {
 
     public static final String KEY_OUTPUT = "output";
     public static final String KEY_ERROR = "error";
+    public static final String GLOBAL_ACTUATORS_CONFIG_PREFIX = "eu.xenit.actuators";
 
     HealthStatus status;
     Map<String, String> details;

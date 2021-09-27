@@ -6,9 +6,9 @@ services:
     ports:
     - target: 8080
       mode: host
- #   - target: 8000
- #     mode: host
- #     published: 8000
+    - target: 8000
+      mode: host
+      published: 8000
  #   - target: 5000
  #     mode: host
  #     published: 5000
@@ -19,6 +19,7 @@ services:
       - ENABLE_CLUSTERING=true
       - GLOBAL_prefix.properties.filtered=eu.xenit
       - GLOBAL_eu.xenit.test=true
+#      - GLOBAL_server.allowWrite=false
 
   share:
     image: docker.io/xenit/alfresco-share-community:5.2.f

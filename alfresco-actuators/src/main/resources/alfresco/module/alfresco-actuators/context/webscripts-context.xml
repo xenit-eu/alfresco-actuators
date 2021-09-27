@@ -9,4 +9,12 @@
     <bean id="webscript.eu.xenit.actuators.webscripts.healthdetails.get"
         class="eu.xenit.actuators.webscripts.classical.HealthdetailsWebScript"
         parent="webscript" />
+
+    <bean id="webscript.eu.xenit.actuators.webscripts.healthgroups.get"
+        class="eu.xenit.actuators.webscripts.classical.HealthgroupsWebScript"
+        parent="webscript" />
+
+    <bean id="webscript.eu.xenit.actuators.webscripts.healthgroupsdetails.get"
+            class="eu.xenit.actuators.webscripts.classical.HealthgroupsdetailsWebScript"
+            parent="webscript" />
 </beans>
