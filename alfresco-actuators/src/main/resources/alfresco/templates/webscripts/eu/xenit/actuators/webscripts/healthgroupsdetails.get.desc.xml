@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Alfresco Actuator Health Groups</shortname>
+    <description>Endpoint responding with an aggregate of health statuses, with detailed info</description>
+    <url>/xenit/actuators/health/group/{targetGroup}/details</url>
+    <authentication>admin</authentication>
+    <format default="json"/>
+    <family>Alfresco Actuators</family>
+</webscript>

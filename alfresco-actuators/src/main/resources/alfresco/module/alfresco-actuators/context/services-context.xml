@@ -17,4 +17,8 @@
     <bean id="StatusInfoService"
         class="eu.xenit.actuators.services.StatusInfoService">
     </bean>
+
+    <bean id="HealthGroupService"
+        class="eu.xenit.actuators.services.HealthGroupService">
+    </bean>
 </beans>

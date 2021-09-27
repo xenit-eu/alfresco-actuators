@@ -1,0 +1,12 @@
+{
+  "groups": [
+    {
+      "name": "readiness",
+      "includes": ["AlfrescoInfoService", "LicenseInfoService", "StatusInfoService", "SystemInfoService"]
+    },
+    {
+      "name": "liveliness",
+      "includes": ["AlfrescoInfoService", "SystemServiceInfo"]
+    }
+  ]
+}
