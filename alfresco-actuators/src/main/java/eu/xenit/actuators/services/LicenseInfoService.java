@@ -58,7 +58,12 @@ public class LicenseInfoService implements HealthIndicator {
         Health health = new Health();
         try {
             LicenseInfo licenseInfo = retrieveLicenseInfo();
-            health.setDetails(Collections.singletonMap(KEY_OUTPUT, licenseInfo.toString()));
+            //community
+            if (licenseInfo != null) {
+                health.setDetails(Collections.singletonMap(KEY_OUTPUT, licenseInfo.toString()));
+            } else {
+                health.setDetails(Collections.singletonMap(KEY_OUTPUT, "No license required for community"));
+            }
             health.setStatus(HealthStatus.UP);
         } catch (Exception exception) {
             health.setStatus(HealthStatus.DOWN);
