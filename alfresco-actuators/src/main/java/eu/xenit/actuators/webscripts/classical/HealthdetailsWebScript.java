@@ -4,14 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.xenit.actuators.Health;
 import eu.xenit.actuators.HealthIndicator;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.extensions.webscripts.Cache;
@@ -19,17 +17,17 @@ import org.springframework.extensions.webscripts.DeclarativeWebScript;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 
-public class HealthdetailsWebScript extends DeclarativeWebScript implements InitializingBean, ManifestSettingWebScript {
+public class HealthdetailsWebScript extends DeclarativeWebScript implements ManifestSettingWebScript {
 
     private static final Logger logger = LoggerFactory.getLogger(HealthdetailsWebScript.class);
 
-    @Autowired
     ApplicationContext applicationContext;
 
     ObjectMapper objectMapper;
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
+    @Autowired
+    public HealthdetailsWebScript(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
         objectMapper = new ObjectMapper();
     }
 

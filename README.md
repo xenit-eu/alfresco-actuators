@@ -41,7 +41,7 @@ Currently the check looks at:
 
 ## Todo
 
-### implment health groups
+### implement health groups
 
 #### Design goal 
 Organize health indicators into groups that can be used for different purposes. The load balancer can track one healthgroup, the orchestrator a different one.
