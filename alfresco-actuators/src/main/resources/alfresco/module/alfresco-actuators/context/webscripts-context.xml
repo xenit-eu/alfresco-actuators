@@ -6,4 +6,7 @@
           class="eu.xenit.actuators.webscripts.classical.HealthWebScript"
           parent="webscript" />
 
+    <bean id="webscript.eu.xenit.actuators.webscripts.healthdetails.get"
+        class="eu.xenit.actuators.webscripts.classical.HealthdetailsWebScript"
+        parent="webscript" />
 </beans>

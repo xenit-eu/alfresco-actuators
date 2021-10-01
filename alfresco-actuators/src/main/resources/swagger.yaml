@@ -104,8 +104,6 @@ definitions:
       edition:
         type: string
         example: "Enterprise"
-      license:
-        $ref: '#/definitions/LicenseInfo'
       modules:
         type: array
         items:
@@ -114,8 +112,6 @@ definitions:
         type: object
         additionalProperties:
           type: string
-      status:
-        $ref: '#/definitions/StatusInfo'
   LicenseInfo:
     type: object
     properties:

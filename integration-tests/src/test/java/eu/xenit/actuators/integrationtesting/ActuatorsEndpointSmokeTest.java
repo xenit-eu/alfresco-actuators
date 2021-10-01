@@ -16,7 +16,7 @@ class ActuatorsEndpointSmokeTest extends RestAssuredTest {
                 .then()
                 .log().ifValidationFails()
                 .statusCode(200)
-                .body(containsString("{\"status\":\"UP\""))
+                .body(containsString("\"status\":\"UP\""))
                 .toString();
     }
 

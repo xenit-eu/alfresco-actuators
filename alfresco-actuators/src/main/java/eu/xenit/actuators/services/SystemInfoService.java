@@ -2,6 +2,7 @@ package eu.xenit.actuators.services;
 
 import eu.xenit.actuators.Health;
 import eu.xenit.actuators.HealthIndicator;
+import eu.xenit.actuators.HealthStatus;
 import eu.xenit.actuators.model.gen.CpuInfo;
 import eu.xenit.actuators.model.gen.JavaInfo;
 import eu.xenit.actuators.model.gen.OperatingSystemInfo;
@@ -80,10 +81,10 @@ public class SystemInfoService implements HealthIndicator {
         Health health = new Health();
         try {
             SystemInfo systemInfo = getSystemInfo();
-            health.setStatus("UP");
+            health.setStatus(HealthStatus.UP);
             health.setDetails(Collections.singletonMap("output",systemInfo.toString()));
         } catch (Exception e) {
-            health.setStatus("DOWN");
+            health.setStatus(HealthStatus.DOWN);
             health.setDetails(Collections.singletonMap("error",e.getMessage()));
         }
         return health;
