@@ -3,7 +3,11 @@ title: Changelog - Alfresco Actuators
 
 # Alfresco Actuators Changelog
 
-## [0.2.0] - 2021-08-20
+## [0.2.0] - 2021-10-27
+
+### Changed
+
+* [PR #8](https://github.com/xenit-eu/alfresco-actuators/pull/8) Refactor existing checks for clarity and extensibility.
 
 ### Fixed
 
