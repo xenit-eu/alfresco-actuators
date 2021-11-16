@@ -1,13 +1,10 @@
 package eu.xenit.actuators.services;
 
-import static eu.xenit.actuators.Health.KEY_ERROR;
-import static eu.xenit.actuators.Health.KEY_OUTPUT;
-
 import eu.xenit.actuators.Health;
+import eu.xenit.actuators.HealthDetailsError;
 import eu.xenit.actuators.HealthIndicator;
 import eu.xenit.actuators.HealthStatus;
 import eu.xenit.actuators.model.gen.AlfrescoInfo;
-import eu.xenit.actuators.model.gen.LicenseInfo;
 import eu.xenit.actuators.model.gen.ModuleInfo;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
-import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.module.ModuleDetails;
 import org.alfresco.service.cmr.module.ModuleService;
 import org.alfresco.service.descriptor.Descriptor;
@@ -33,8 +29,6 @@ public class AlfrescoInfoService implements HealthIndicator {
     private static final Logger logger = LoggerFactory.getLogger(AlfrescoInfoService.class);
 
     @Autowired
-    private ServiceRegistry serviceRegistry;
-    @Autowired
     @Qualifier("DescriptorService")
     private DescriptorService descriptorService;
     @Autowired
@@ -46,23 +40,19 @@ public class AlfrescoInfoService implements HealthIndicator {
     AlfrescoInfo getAlfrescoInfo() {
 
         ManifestInfo manifestInfo = ManifestInfo.getInstance();
-        String id = null;
-        String version = null;
-        String edition = null;
-        LicenseInfo license = null;
         Descriptor serverDescriptor = descriptorService.getServerDescriptor();
         Descriptor repositoryDescriptor = descriptorService.getCurrentRepositoryDescriptor();
-        id = repositoryDescriptor.getId();
-        version = serverDescriptor.getVersion();
-        edition = serverDescriptor.getEdition();
+        String id = repositoryDescriptor.getId();
+        String version = serverDescriptor.getVersion();
+        String edition = serverDescriptor.getEdition();
 
         return new AlfrescoInfo()
                 .id(id)
                 .version(version)
                 .warManifest(manifestInfo.getManifestProperties())
                 .edition(edition)
-                .modules(this.retrieveAlfrescoModules());
-//                .globalProperties(this.retrievePropertiesFiltered())
+                .modules(this.retrieveAlfrescoModules())
+                .globalProperties(this.retrievePropertiesFiltered());
     }
 
 
@@ -80,23 +70,21 @@ public class AlfrescoInfoService implements HealthIndicator {
         return ManifestInfo.getInstance().getManifestProperties();
     }
 
-    // Not used
     private Map<String, String> retrievePropertiesFiltered() {
         final String PROP_STARTS_WITH = "prefix.properties.filtered";
 
         String propsShouldStartWith = globalProperties.getProperty(PROP_STARTS_WITH);
         if (propsShouldStartWith == null) {
             logger.error("Property '{}' is not set, you'll see no properties...", PROP_STARTS_WITH);
-            return null;
+            return Collections.emptyMap();
         }
 
         Map<String, String> map = new TreeMap<>();
 
         for (Map.Entry<Object, Object> entry : globalProperties.entrySet()) {
             String key = entry.getKey().toString();
-            if (key.startsWith(propsShouldStartWith)
-                    && !map.containsKey(key)) { // the first wins
-                map.put(key, entry.getValue().toString());
+            if (key.startsWith(propsShouldStartWith)) { // the first wins
+                map.putIfAbsent(key, entry.getValue().toString());
             }
         }
 
@@ -104,7 +92,6 @@ public class AlfrescoInfoService implements HealthIndicator {
     }
 
     private List<ModuleInfo> retrieveAlfrescoModules() {
-
         List<ModuleDetails> allModules = moduleService.getAllModules();
         List<ModuleInfo> list = new ArrayList<>(allModules.size());
 
@@ -127,12 +114,11 @@ public class AlfrescoInfoService implements HealthIndicator {
     public Health isHealthy() {
         Health health = new Health();
         try {
-            AlfrescoInfo alfrescoInfo = getAlfrescoInfo();
-            health.setDetails(Collections.singletonMap(KEY_OUTPUT, alfrescoInfo.toString()));
+            health.setDetails(getAlfrescoInfo());
             health.setStatus(HealthStatus.UP);
         } catch (Exception exception) {
             health.setStatus(HealthStatus.DOWN);
-            health.setDetails(Collections.singletonMap(KEY_ERROR, exception.getMessage()));
+            health.setDetails(new HealthDetailsError(exception.getMessage()));
         }
         return health;
     }

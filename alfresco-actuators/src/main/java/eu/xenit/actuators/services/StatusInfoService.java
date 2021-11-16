@@ -1,13 +1,10 @@
 package eu.xenit.actuators.services;
 
-import static eu.xenit.actuators.Health.KEY_ERROR;
-import static eu.xenit.actuators.Health.KEY_OUTPUT;
-
 import eu.xenit.actuators.Health;
+import eu.xenit.actuators.HealthDetailsError;
 import eu.xenit.actuators.HealthIndicator;
 import eu.xenit.actuators.HealthStatus;
 import eu.xenit.actuators.model.gen.StatusInfo;
-import java.util.Collections;
 import java.util.Properties;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
@@ -25,8 +22,6 @@ public class StatusInfoService implements HealthIndicator {
 
     private static final Logger logger = LoggerFactory.getLogger(StatusInfoService.class);
 
-    public static final String GLOBAL_HEALTH_ON_READONLY = "eu.xenit.actuators.repository.healthyOnReadOnly";
-
     @Autowired
     private RepoAdminService repoAdminService;
     @Autowired
@@ -42,21 +37,15 @@ public class StatusInfoService implements HealthIndicator {
     // needs authentication
     protected StatusInfo retrieveStatusInfo() {
         final StatusInfo statusInfo = new StatusInfo();
-        retryingTransactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Object>() {
-            @Override
-            public Object execute() throws Throwable {
-                AuthenticationUtil.runAs(new AuthenticationUtil.RunAsWork<Object>() {
-                    @Override
-                    public Object doWork() throws Exception {
-                        statusInfo
-                                .readOnly(repoAdminService.getUsage().isReadOnly())
-                                .auditEnabled(auditService.isAuditEnabled())
-                                .thumbnailGeneration(thumbnailService.getThumbnailsEnabled());
-                        return null;
-                    }
-                }, AuthenticationUtil.getAdminUserName());
+        retryingTransactionHelper.doInTransaction(() -> {
+            AuthenticationUtil.runAs(() -> {
+                statusInfo
+                        .readOnly(repoAdminService.getUsage().isReadOnly())
+                        .auditEnabled(auditService.isAuditEnabled())
+                        .thumbnailGeneration(thumbnailService.getThumbnailsEnabled());
                 return null;
-            }
+            }, AuthenticationUtil.getAdminUserName());
+            return null;
         }, true);
         return statusInfo;
     }
@@ -66,11 +55,12 @@ public class StatusInfoService implements HealthIndicator {
         Health health = new Health();
         try {
             StatusInfo statusInfo = retrieveStatusInfo();
-            health.setDetails(Collections.singletonMap(KEY_OUTPUT, statusInfo.toString()));
+            health.setDetails(statusInfo);
             health.setStatus(HealthStatus.UP);
         } catch (Exception exception) {
+            logger.error("Problem retrieving Status info", exception);
             health.setStatus(HealthStatus.DOWN);
-            health.setDetails(Collections.singletonMap(KEY_ERROR, exception.getMessage()));
+            health.setDetails(new HealthDetailsError(exception.getMessage()));
         }
         return health;
     }

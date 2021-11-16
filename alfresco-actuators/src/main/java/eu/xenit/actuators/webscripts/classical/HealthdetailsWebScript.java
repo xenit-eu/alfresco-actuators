@@ -21,21 +21,19 @@ public class HealthdetailsWebScript extends DeclarativeWebScript implements Mani
 
     private static final Logger logger = LoggerFactory.getLogger(HealthdetailsWebScript.class);
 
-    ApplicationContext applicationContext;
-
-    ObjectMapper objectMapper;
+    private final ApplicationContext applicationContext;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     public HealthdetailsWebScript(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
-        objectMapper = new ObjectMapper();
     }
 
     @Override
     protected Map<String, Object> executeImpl(WebScriptRequest request, Status status, Cache cache) {
         setManifestProperties(request);
         final Map<String, Object> model = new HashMap<>();
-        Map<String, HealthIndicator> indicators = (Map) applicationContext.getBeansOfType(HealthIndicator.class);
+        Map<String, HealthIndicator> indicators = applicationContext.getBeansOfType(HealthIndicator.class);
         List<Map<String, Health>> healthList = indicators.values().stream()
                 .map(it -> {
                     Map<String, Health> healthMap = new HashMap<>();

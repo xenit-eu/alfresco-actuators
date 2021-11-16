@@ -1,6 +1,7 @@
 package eu.xenit.actuators.services;
 
 import eu.xenit.actuators.Health;
+import eu.xenit.actuators.HealthDetailsError;
 import eu.xenit.actuators.HealthIndicator;
 import eu.xenit.actuators.HealthStatus;
 import eu.xenit.actuators.model.gen.CpuInfo;
@@ -12,7 +13,6 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.lang.management.RuntimeMXBean;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -23,9 +23,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SystemInfoService implements HealthIndicator {
-    private static final Logger logger = LoggerFactory.getLogger(HealthIndicator.class);
 
-    SystemInfo getSystemInfo() {
+    private static final Logger logger = LoggerFactory.getLogger(SystemInfoService.class);
+
+    private SystemInfo getSystemInfo() {
         return new SystemInfo()
                 .os(osInfo())
                 .java(javaInfo())
@@ -48,21 +49,19 @@ public class SystemInfoService implements HealthIndicator {
         List<GarbageCollectorMXBean> gcMxBeans = ManagementFactory.getGarbageCollectorMXBeans();
 
         List<String> gcs = new ArrayList<>(gcMxBeans.size());
-        for (GarbageCollectorMXBean bean : gcMxBeans)
+        for (GarbageCollectorMXBean bean : gcMxBeans) {
             gcs.add(bean.getName());
-
+        }
 
         RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
 
         Map<String, String> javaProperties = new TreeMap<>();
-        for (Map.Entry<String,String> entry : runtimeMXBean.getSystemProperties().entrySet()) {
-            if (entry.getKey().startsWith("java")){
+        for (Map.Entry<String, String> entry : runtimeMXBean.getSystemProperties().entrySet()) {
+            if (entry.getKey().startsWith("java")) {
                 String key = entry.getKey().substring(5);
-                if (!javaProperties.containsKey(key))
-                    javaProperties.put(key,entry.getValue());
+                javaProperties.putIfAbsent(key, entry.getValue());
             }
         }
-
 
         return new JavaInfo()
                 .inputArguments(runtimeMXBean.getInputArguments())
@@ -82,10 +81,11 @@ public class SystemInfoService implements HealthIndicator {
         try {
             SystemInfo systemInfo = getSystemInfo();
             health.setStatus(HealthStatus.UP);
-            health.setDetails(Collections.singletonMap("output",systemInfo.toString()));
+            health.setDetails(systemInfo);
         } catch (Exception e) {
+            logger.error("Problem retrieving system info", e);
             health.setStatus(HealthStatus.DOWN);
-            health.setDetails(Collections.singletonMap("error",e.getMessage()));
+            health.setDetails(new HealthDetailsError(e.getMessage()));
         }
         return health;
     }

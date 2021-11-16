@@ -3,6 +3,13 @@ title: Changelog - Alfresco Actuators
 
 # Alfresco Actuators Changelog
 
+## [0.3.0] - 2021-11-17
+
+### Changed
+
+* [ISSUE #11](https://github.com/xenit-eu/alfresco-actuators/issues/11) Avoid thread unsafe access to manifest properties
+* [ISSUE #12](https://github.com/xenit-eu/alfresco-actuators/issues/12) Return a correct JSON syntax
+
 ## [0.2.0] - 2021-10-27
 
 ### Changed
