@@ -1,13 +1,10 @@
 package eu.xenit.actuators.services;
 
-import static eu.xenit.actuators.Health.KEY_ERROR;
-import static eu.xenit.actuators.Health.KEY_OUTPUT;
-
 import eu.xenit.actuators.Health;
+import eu.xenit.actuators.HealthDetailsError;
 import eu.xenit.actuators.HealthIndicator;
 import eu.xenit.actuators.HealthStatus;
 import eu.xenit.actuators.model.gen.LicenseInfo;
-import java.util.Collections;
 import org.alfresco.service.descriptor.DescriptorService;
 import org.alfresco.service.license.LicenseDescriptor;
 import org.alfresco.service.license.LicenseService;
@@ -60,14 +57,15 @@ public class LicenseInfoService implements HealthIndicator {
             LicenseInfo licenseInfo = retrieveLicenseInfo();
             //community
             if (licenseInfo != null) {
-                health.setDetails(Collections.singletonMap(KEY_OUTPUT, licenseInfo.toString()));
+                health.setDetails(licenseInfo);
             } else {
-                health.setDetails(Collections.singletonMap(KEY_OUTPUT, "No license required for community"));
+                health.setDetails(new HealthDetailsError("No license required for community"));
             }
             health.setStatus(HealthStatus.UP);
         } catch (Exception exception) {
+            logger.error("Problem retrieving license info",exception);
             health.setStatus(HealthStatus.DOWN);
-            health.setDetails(Collections.singletonMap(KEY_ERROR, exception.getMessage()));
+            health.setDetails(new HealthDetailsError(exception.getMessage()));
         }
         return health;
     }

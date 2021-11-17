@@ -1,7 +1,5 @@
 package eu.xenit.actuators.integrationtesting;
 
-import static io.restassured.RestAssured.preemptive;
-
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeAll;
 import org.slf4j.Logger;

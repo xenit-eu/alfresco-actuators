@@ -1,14 +1,11 @@
 package eu.xenit.actuators.webscripts.classical;
 
-import static eu.xenit.actuators.Health.KEY_ERROR;
-
 import eu.xenit.actuators.Health;
+import eu.xenit.actuators.HealthDetailsError;
 import eu.xenit.actuators.HealthIndicator;
 import eu.xenit.actuators.HealthStatus;
 import java.util.HashMap;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.extensions.webscripts.Cache;
@@ -18,10 +15,8 @@ import org.springframework.extensions.webscripts.WebScriptRequest;
 
 public class HealthWebScript extends DeclarativeWebScript implements ManifestSettingWebScript {
 
-    private static final Logger logger = LoggerFactory.getLogger(HealthWebScript.class);
-
     @Autowired
-    ApplicationContext applicationContext;
+    private ApplicationContext applicationContext;
 
     @Override
     protected Map<String, Object> executeImpl(WebScriptRequest req, Status status, Cache cache) {
@@ -30,13 +25,13 @@ public class HealthWebScript extends DeclarativeWebScript implements ManifestSet
         model.put("health", "UP");
 
         String message = "";
-        Map<String, HealthIndicator> indicators = (Map) applicationContext.getBeansOfType(HealthIndicator.class);
+        Map<String, HealthIndicator> indicators = applicationContext.getBeansOfType(HealthIndicator.class);
         for (HealthIndicator indicator : indicators.values()) {
             Health health = indicator.isHealthy();
             if (health.getStatus().equals(HealthStatus.DOWN)) {
                 model.put("health", health.getStatus());
                 status.setCode(Status.STATUS_INTERNAL_SERVER_ERROR);
-                status.setMessage(health.getDetails().get(KEY_ERROR));
+                status.setMessage(((HealthDetailsError) health.getDetails()).getError());
                 break;
             }
         }

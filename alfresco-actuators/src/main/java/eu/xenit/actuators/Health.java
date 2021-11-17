@@ -1,14 +1,18 @@
 package eu.xenit.actuators;
 
-import java.util.Map;
-
 public class Health {
 
-    public static final String KEY_OUTPUT = "output";
-    public static final String KEY_ERROR = "error";
+    private HealthStatus status;
+    private Object details;
 
-    HealthStatus status;
-    Map<String, String> details;
+    public Object getDetails() {
+        return details;
+    }
+
+    public void setDetails(Object details) {
+        this.details = details;
+    }
+
 
     public HealthStatus getStatus() {
         return status;
@@ -18,11 +22,4 @@ public class Health {
         this.status = status;
     }
 
-    public Map<String, String> getDetails() {
-        return details;
-    }
-
-    public void setDetails(Map<String, String> details) {
-        this.details = details;
-    }
 }
