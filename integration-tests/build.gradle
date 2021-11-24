@@ -56,6 +56,10 @@ subprojects {
 
     check.dependsOn integrationTest
 
+    tasks.withType(Test).configureEach {
+        maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+    }
+
     apply plugin: 'eu.xenit.docker-alfresco'
     apply plugin: 'eu.xenit.docker-compose.auto'
 
