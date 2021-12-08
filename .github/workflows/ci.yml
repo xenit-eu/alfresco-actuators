@@ -11,6 +11,10 @@ env:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        flavour: [ "community", "enterprise" ]
+        version: [ "52", "60", "61", "62" ]
     steps:
       - uses: actions/checkout@v2
         with:
@@ -19,7 +23,7 @@ jobs:
         with:
           java-version: 11
       - name: Integration test
-        run: ./gradlew integrationTest
+        run: ./gradlew :integration-tests:alfresco-${{ matrix.flavour }}-${{ matrix.version }}:integrationTest --parallel
   publish:
     needs: [ test ]
     runs-on: ubuntu-latest

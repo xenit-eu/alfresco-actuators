@@ -6,26 +6,12 @@ services:
     ports:
     - target: 8080
       mode: host
- #   - target: 8000
- #     mode: host
- #     published: 8000
- #   - target: 5000
- #     mode: host
- #     published: 5000
     environment:
-      - DEBUG=true
-      - JMX_ENABLED=true
       - INDEX=noindex
-      - ENABLE_CLUSTERING=true
-      - GLOBAL_prefix.properties.filtered=eu.xenit
-      - GLOBAL_eu.xenit.test=true
-
-  share:
-    image: docker.io/xenit/alfresco-share-community:5.2.f
-    ports:
-    - target: 8080
-      mode: host
-
+      - GLOBAL_ooo.enabled=false
+      - GLOBAL_jodconverter.enabled=false
+      - JAVA_OPTS=-Xmx312M # results in about ~670MB memory in use
+      
   postgresql:
     image: docker.io/xenit/postgres
     environment:
