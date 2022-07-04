@@ -24,6 +24,13 @@ jobs:
           java-version: 11
       - name: Integration test
         run: ./gradlew :integration-tests:alfresco-${{ matrix.flavour }}-${{ matrix.version }}:integrationTest --parallel
+      - name: 'Upload Artifact'
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-result-${{ matrix.flavour }}-${{ matrix.version }}
+          path: /home/runner/work/**/build/reports
+          retention-days: 2
   publish:
     needs: [ test ]
     runs-on: ubuntu-latest
