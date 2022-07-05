@@ -80,9 +80,12 @@ public class AlfrescoInfoService implements HealthIndicator {
             logger.debug("Property '{}' is not set, you'll see no properties...", PROP_FILTERED_PREFIX);
             return Collections.emptyMap();
         }
-
-        return globalProperties.entrySet().stream().filter(entry -> entry.getKey().toString().startsWith(propFilteredPrefix))
-                .collect(Collectors.toMap(entry -> entry.getKey().toString(), entry -> entry.getValue().toString()));
+        return globalProperties.entrySet().stream()
+                .filter(entry -> entry.getKey().toString().startsWith(propFilteredPrefix))
+                .collect(
+                        Collectors.toMap(
+                                entry -> entry.getKey().toString(),
+                                entry -> entry.getValue().toString()));
     }
 
     private List<ModuleInfo> retrieveAlfrescoModules() {
