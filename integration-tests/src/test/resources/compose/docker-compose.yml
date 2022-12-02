@@ -7,13 +7,15 @@ services:
     - target: 8080
       mode: host
     environment:
-      - INDEX=noindex
+      - GLOBAL_local.transform.service.enabled=false
+      - GLOBAL_legacy.transform.service.enabled=false
+      - GLOBAL_index.subsystem.name=noindex
       - GLOBAL_ooo.enabled=false
       - GLOBAL_jodconverter.enabled=false
       - JAVA_OPTS=-Xmx312M # results in about ~670MB memory in use
       
   postgresql:
-    image: docker.io/xenit/postgres
+    image: ${POSTGRES_IMAGE}
     environment:
       - POSTGRES_USER=alfresco
       - POSTGRES_PASSWORD=admin
