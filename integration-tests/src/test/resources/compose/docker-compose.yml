@@ -7,8 +7,6 @@ services:
     - target: 8080
       mode: host
     environment:
-      - GLOBAL_db.driver=org.postgresql.Driver
-      - GLOBAL_db.url=jdbc:postgresql://postgresql:5432/alfresco
       - GLOBAL_local.transform.service.enabled=false
       - GLOBAL_legacy.transform.service.enabled=false
       - GLOBAL_index.subsystem.name=noindex
