@@ -68,14 +68,17 @@ subprojects {
     }
 
     dependencies {
+        if (project.hasProperty("alfrescoBaseWarBom")) {
+            baseAlfrescoWar platform("${alfrescoBaseWarBom}")
+        }
         baseAlfrescoWar "${alfrescoBaseWar}"
         alfrescoAmp project(path: ":alfresco-actuators", configuration: "amp")
 
-        if (alfrescoBaseImage.contains("alfresco-repository-skeleton"))
+        if (alfrescoBaseImage.contains("alfresco-repository-skeleton")) {
             sharedLib 'org.postgresql:postgresql:42.2.6'
+        }
 
-        if (!(project.alfrescoShort.equals('52') || project.alfrescoShort.equals('60')))
-            alfrescoAmp "eu.xenit.alfresco:alfresco-hotfix-MNT-20557:1.0.2"
+
     }
 
     dockerAlfresco {
@@ -91,10 +94,8 @@ subprojects {
         useComposeFiles = [
                 '../src/test/resources/compose/docker-compose.yml'
         ]
-
+        environment.put 'POSTGRES_IMAGE', "${project.ext.postgresImage}"
         isRequiredBy integrationTest
 
-        // expose alfresco/inflow on a random port, comment to use default port (8080)
-        environment.put 'ALFRESCO_TCP_8080', '8080'
     }
 }
