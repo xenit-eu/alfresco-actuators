@@ -10,8 +10,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
-import java.util.TreeMap;
+import java.util.stream.Collectors;
+
 import org.alfresco.service.cmr.module.ModuleDetails;
 import org.alfresco.service.cmr.module.ModuleService;
 import org.alfresco.service.descriptor.Descriptor;
@@ -52,7 +54,7 @@ public class AlfrescoInfoService implements HealthIndicator {
                 .warManifest(manifestInfo.getManifestProperties())
                 .edition(edition)
                 .modules(this.retrieveAlfrescoModules())
-                .globalProperties(this.retrievePropertiesFiltered());
+                .globalProperties(this.retrieveFilteredProperties());
     }
 
 
@@ -70,25 +72,20 @@ public class AlfrescoInfoService implements HealthIndicator {
         return ManifestInfo.getInstance().getManifestProperties();
     }
 
-    private Map<String, String> retrievePropertiesFiltered() {
-        final String PROP_STARTS_WITH = "prefix.properties.filtered";
+    private Map<String, String> retrieveFilteredProperties() {
+        final String PROP_FILTERED_PREFIX = "prefix.properties.filtered";
 
-        String propsShouldStartWith = globalProperties.getProperty(PROP_STARTS_WITH);
-        if (propsShouldStartWith == null) {
-            logger.error("Property '{}' is not set, you'll see no properties...", PROP_STARTS_WITH);
+        String propFilteredPrefix = globalProperties.getProperty(PROP_FILTERED_PREFIX);
+        if (Objects.isNull(propFilteredPrefix)) {
+            logger.debug("Property '{}' is not set, you'll see no properties...", PROP_FILTERED_PREFIX);
             return Collections.emptyMap();
         }
-
-        Map<String, String> map = new TreeMap<>();
-
-        for (Map.Entry<Object, Object> entry : globalProperties.entrySet()) {
-            String key = entry.getKey().toString();
-            if (key.startsWith(propsShouldStartWith)) { // the first wins
-                map.putIfAbsent(key, entry.getValue().toString());
-            }
-        }
-
-        return map;
+        return globalProperties.entrySet().stream()
+                .filter(entry -> entry.getKey().toString().startsWith(propFilteredPrefix))
+                .collect(
+                        Collectors.toMap(
+                                entry -> entry.getKey().toString(),
+                                entry -> entry.getValue().toString()));
     }
 
     private List<ModuleInfo> retrieveAlfrescoModules() {
