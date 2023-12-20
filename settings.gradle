@@ -4,7 +4,7 @@ rootProject.name = 'alfresco-actuators'
 include ':alfresco-actuators'
 
 include ':integration-tests'
-["61", "62", "70", "71", "72", "73"].each { version ->
+["61", "62", "70", "71", "72", "73", "74"].each { version ->
     include ":integration-tests:alfresco-community-${version}"
     include ":integration-tests:alfresco-enterprise-${version}"
 }

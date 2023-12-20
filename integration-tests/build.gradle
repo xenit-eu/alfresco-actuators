@@ -38,6 +38,8 @@ test {
 
 subprojects {
     apply plugin: 'java'
+    apply plugin: 'eu.xenit.docker-alfresco'
+    apply plugin: 'eu.xenit.docker-compose.auto'
 
     def alfrescoVersion = project.name[-2..-1]
     apply from: "${project.projectDir}/overload.gradle"
@@ -60,13 +62,6 @@ subprojects {
         maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
     }
 
-    apply plugin: 'eu.xenit.docker-alfresco'
-    apply plugin: 'eu.xenit.docker-compose.auto'
-
-    configurations {
-        sharedLib
-    }
-
     dependencies {
         if (project.hasProperty("alfrescoBaseWarBom")) {
             baseAlfrescoWar platform("${alfrescoBaseWarBom}")
@@ -75,9 +70,7 @@ subprojects {
         }
         baseAlfrescoWar "${alfrescoBaseWar}"
         alfrescoAmp project(path: ":alfresco-actuators", configuration: "amp")
-        if (alfrescoBaseImage.contains("alfresco-repository-skeleton")) {
-            sharedLib 'org.postgresql:postgresql:42.2.6'
-        }
+        alfrescoSM 'org.postgresql:postgresql:42.2.6'
         alfrescoSM "org.orderofthebee.support-tools:support-tools-repo:1.2.0.0"
 
 
@@ -85,11 +78,7 @@ subprojects {
 
     dockerAlfresco {
         baseImage = "${alfrescoBaseImage}"
-        leanImage = !alfrescoBaseImage.contains("alfresco-repository-skeleton")
-    }
-
-    createDockerFile {
-        smartCopy(configurations.sharedLib, '${CATALINA_HOME}/shared/lib/')
+        leanImage = false
     }
 
     dockerCompose {
