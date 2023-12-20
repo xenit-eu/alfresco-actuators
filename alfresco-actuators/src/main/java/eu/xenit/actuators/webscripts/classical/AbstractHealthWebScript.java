@@ -47,7 +47,7 @@ public abstract class AbstractHealthWebScript extends DeclarativeWebScript imple
     protected Map<String, Object> executeImpl(WebScriptRequest request, Status status, Cache cache) {
         setManifestProperties(request);
         Map<String, HealthIndicator> indicators = getHealthIndicators();
-        String disableParam = request.getParameter("disable");
+        String disableParam = request.getParameter("disabled");
         if (disableParam != null && !disableParam.isEmpty()) {
             for (String indicatorName : disableParam.split(",")) {
                 if (indicators.containsKey(indicatorName)) {

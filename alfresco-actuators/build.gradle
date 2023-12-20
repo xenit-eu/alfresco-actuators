@@ -2,7 +2,6 @@ plugins {
     id 'java'
     id 'maven-publish'
     id 'eu.xenit.amp'
-    id 'org.hidetake.swagger.generator' version '2.19.2'
     id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
@@ -14,9 +13,6 @@ ext {
     servletApiVersion = '2.5'
 }
 
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -31,44 +27,13 @@ dependencies {
 
     alfrescoProvided("javax.servlet:servlet-api:$servletApiVersion")
 
-    // Add dependency for Swagger Codegen CLI
-    swaggerCodegen 'io.swagger:swagger-codegen-cli:2.2.3'
-
     compileOnly 'io.swagger:swagger-annotations:1.5.6'
     compileOnly 'javax.validation:validation-api:1.1.0.Final'
     compileOnly 'com.fasterxml.jackson.core:jackson-annotations:2.9.0'
 }
 
-swaggerSources {
-    model {
-        inputFile = file("src/main/resources/swagger.yaml")
-        code {
-            language = 'spring'
-            additionalProperties = [
-                    "modelPackage"     : "eu.xenit.actuators.model.gen",
-                    "serializableModel": "true"
-            ]
-            // Only generate model:
-            components = ['models']
-        }
-    }
+apply from: "${rootProject.projectDir}/swaggerCodeGen.gradle"
 
-}
-
-
-sourceSets {
-    main {
-        java {
-            srcDirs = ["src/main/java", "$generateSwaggerCodeModel.outputDir/src/main/java"]
-        }
-        resources {
-            srcDirs = ['src/main/resources']
-        }
-    }
-}
-
-
-compileJava.dependsOn generateSwaggerCodeModel
 
 publishing {
     publications {
