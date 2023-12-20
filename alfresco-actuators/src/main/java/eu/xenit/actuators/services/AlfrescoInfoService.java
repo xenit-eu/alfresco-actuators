@@ -1,19 +1,8 @@
 package eu.xenit.actuators.services;
 
-import eu.xenit.actuators.Health;
-import eu.xenit.actuators.HealthDetailsError;
 import eu.xenit.actuators.HealthIndicator;
-import eu.xenit.actuators.HealthStatus;
 import eu.xenit.actuators.model.gen.AlfrescoInfo;
 import eu.xenit.actuators.model.gen.ModuleInfo;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Properties;
-import java.util.stream.Collectors;
-
 import org.alfresco.service.cmr.module.ModuleDetails;
 import org.alfresco.service.cmr.module.ModuleService;
 import org.alfresco.service.descriptor.Descriptor;
@@ -24,9 +13,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.stream.Collectors;
+
 
 @Service
-public class AlfrescoInfoService implements HealthIndicator {
+public class AlfrescoInfoService extends HealthIndicator {
 
     private static final Logger logger = LoggerFactory.getLogger(AlfrescoInfoService.class);
 
@@ -39,7 +36,8 @@ public class AlfrescoInfoService implements HealthIndicator {
     @Qualifier("global-properties")
     private Properties globalProperties;
 
-    AlfrescoInfo getAlfrescoInfo() {
+    @Override
+    protected AlfrescoInfo getHealthDetails() {
 
         ManifestInfo manifestInfo = ManifestInfo.getInstance();
         Descriptor serverDescriptor = descriptorService.getServerDescriptor();
@@ -57,20 +55,6 @@ public class AlfrescoInfoService implements HealthIndicator {
                 .globalProperties(this.retrieveFilteredProperties());
     }
 
-
-    String getVersion() {
-        Descriptor serverDescriptor = descriptorService.getServerDescriptor();
-        return serverDescriptor.getVersion();
-    }
-
-    String getEdition() {
-        Descriptor serverDescriptor = descriptorService.getServerDescriptor();
-        return serverDescriptor.getEdition();
-    }
-
-    Map<String, String> getManifestProperties() {
-        return ManifestInfo.getInstance().getManifestProperties();
-    }
 
     private Map<String, String> retrieveFilteredProperties() {
         final String PROP_FILTERED_PREFIX = "prefix.properties.filtered";
@@ -107,16 +91,4 @@ public class AlfrescoInfoService implements HealthIndicator {
                 .version(moduleDetails.getProperties().getProperty(ModuleDetails.PROP_VERSION));
     }
 
-    @Override
-    public Health isHealthy() {
-        Health health = new Health();
-        try {
-            health.setDetails(getAlfrescoInfo());
-            health.setStatus(HealthStatus.UP);
-        } catch (Exception exception) {
-            health.setStatus(HealthStatus.DOWN);
-            health.setDetails(new HealthDetailsError(exception.getMessage()));
-        }
-        return health;
-    }
 }

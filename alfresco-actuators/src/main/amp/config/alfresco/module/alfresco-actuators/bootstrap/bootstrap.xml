@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+<beans>
+    <bean id="eu.xenit.actuators.bootstrap" class="org.alfresco.repo.admin.patch.impl.GenericBootstrapPatch"
+          parent="basePatch">
+        <property name="id">
+            <value>eu.xenit.alfresco-actuators.alfresco-actuators.filesLoader</value>
+        </property>
+        <property name="description" value="File used to verify the health of content store of alfresco"/>
+        <property name="fixesFromSchema">
+            <value>0</value>
+        </property>
+        <property name="fixesToSchema">
+            <value>${version.schema}</value>
+        </property>
+        <property name="targetSchema">
+            <value>99999</value>
+        </property>
+        <property name="importerBootstrap" ref="spacesBootstrap"/>
+        <property name="bootstrapView">
+            <props>
+                <prop key="uuidBinding">UPDATE_EXISTING</prop>
+                <prop key="path">/${spaces.company_home.childname}/${spaces.dictionary.childname}</prop>
+                <prop key="location">alfresco/module/alfresco-actuators/bootstrap/AlfrescoActuatorsACP.acp</prop>
+            </props>
+        </property>
+    </bean>
+</beans>

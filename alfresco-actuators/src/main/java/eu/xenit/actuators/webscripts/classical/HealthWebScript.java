@@ -1,42 +1,31 @@
 package eu.xenit.actuators.webscripts.classical;
 
-import eu.xenit.actuators.Health;
-import eu.xenit.actuators.HealthDetailsError;
 import eu.xenit.actuators.HealthIndicator;
-import eu.xenit.actuators.HealthStatus;
-import java.util.HashMap;
-import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.extensions.webscripts.Cache;
-import org.springframework.extensions.webscripts.DeclarativeWebScript;
+import eu.xenit.actuators.model.gen.HealthInfo;
+import eu.xenit.actuators.model.gen.HealthStatus;
+import eu.xenit.actuators.model.gen.StatusEnum;
 import org.springframework.extensions.webscripts.Status;
-import org.springframework.extensions.webscripts.WebScriptRequest;
 
-public class HealthWebScript extends DeclarativeWebScript implements ManifestSettingWebScript {
+import java.util.Map;
 
-    @Autowired
-    private ApplicationContext applicationContext;
+public class HealthWebScript extends AbstractHealthWebScript {
+
 
     @Override
-    protected Map<String, Object> executeImpl(WebScriptRequest req, Status status, Cache cache) {
-        setManifestProperties(req);
-        final Map<String, Object> model = new HashMap<>();
-        model.put("health", "UP");
-
-        String message = "";
-        Map<String, HealthIndicator> indicators = applicationContext.getBeansOfType(HealthIndicator.class);
+    protected HealthStatus executeHealth(Map<String, HealthIndicator> indicators, Status status) {
+        HealthStatus healthStatus = new HealthStatus();
+        healthStatus.setStatus(StatusEnum.UP);
         for (HealthIndicator indicator : indicators.values()) {
-            Health health = indicator.isHealthy();
-            if (health.getStatus().equals(HealthStatus.DOWN)) {
-                model.put("health", health.getStatus());
+            HealthInfo health = indicator.isHealthy();
+            if (StatusEnum.DOWN.equals(health.getStatus())) {
+                healthStatus.setStatus(health.getStatus());
                 status.setCode(Status.STATUS_INTERNAL_SERVER_ERROR);
-                status.setMessage(((HealthDetailsError) health.getDetails()).getError());
+                healthStatus.setMessage(health.getName() + " failed with error: " + health.getError());
+                status.setMessage(health.getError());
                 break;
             }
         }
-        model.put("message", message);
-
-        return model;
+        return healthStatus;
     }
+
 }
