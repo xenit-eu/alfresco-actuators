@@ -4,16 +4,21 @@ services:
   alfresco:
     image: ${DOCKER_IMAGE}
     ports:
-    - target: 8080
-      mode: host
+      - "8080:8080"
+      - "8000:8000"
     environment:
       - GLOBAL_local.transform.service.enabled=false
       - GLOBAL_legacy.transform.service.enabled=false
       - GLOBAL_index.subsystem.name=noindex
       - GLOBAL_ooo.enabled=false
+      - DEBUG=true
+#      - JAVA_OPTS_DEBUGH="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=0.0.0.0:8000"
       - GLOBAL_jodconverter.enabled=false
       - JAVA_OPTS=-Xmx312M # results in about ~670MB memory in use
-      
+  share:
+    image: private.docker.xenit.eu/customer/xenit/alfresco-alf1/share:latest
+    ports:
+      - "8081:8080"
   postgresql:
     image: ${POSTGRES_IMAGE}
     environment:

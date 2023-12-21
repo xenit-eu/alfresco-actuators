@@ -4,9 +4,9 @@
 
     <bean id="webscript.eu.xenit.actuators.webscripts.health.get"
           class="eu.xenit.actuators.webscripts.classical.HealthWebScript"
-          parent="webscript" />
+          parent="webscript"/>
 
     <bean id="webscript.eu.xenit.actuators.webscripts.healthdetails.get"
-        class="eu.xenit.actuators.webscripts.classical.HealthdetailsWebScript"
-        parent="webscript" />
+          class="eu.xenit.actuators.webscripts.classical.HealthDetailsWebScript"
+          parent="webscript"/>
 </beans>

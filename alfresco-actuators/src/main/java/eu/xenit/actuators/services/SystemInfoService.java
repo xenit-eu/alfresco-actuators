@@ -1,13 +1,12 @@
 package eu.xenit.actuators.services;
 
-import eu.xenit.actuators.Health;
-import eu.xenit.actuators.HealthDetailsError;
 import eu.xenit.actuators.HealthIndicator;
-import eu.xenit.actuators.HealthStatus;
 import eu.xenit.actuators.model.gen.CpuInfo;
 import eu.xenit.actuators.model.gen.JavaInfo;
 import eu.xenit.actuators.model.gen.OperatingSystemInfo;
 import eu.xenit.actuators.model.gen.SystemInfo;
+import org.springframework.stereotype.Service;
+
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
@@ -16,17 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
 
 @Service
-public class SystemInfoService implements HealthIndicator {
+public class SystemInfoService extends HealthIndicator {
 
-    private static final Logger logger = LoggerFactory.getLogger(SystemInfoService.class);
 
-    private SystemInfo getSystemInfo() {
+    @Override
+    protected SystemInfo getHealthDetails() {
         return new SystemInfo()
                 .os(osInfo())
                 .java(javaInfo())
@@ -34,9 +30,8 @@ public class SystemInfoService implements HealthIndicator {
 
     }
 
-    private static OperatingSystemInfo osInfo() {
+    private OperatingSystemInfo osInfo() {
         OperatingSystemMXBean osMXBean = ManagementFactory.getOperatingSystemMXBean();
-
         return new OperatingSystemInfo()
                 .name(osMXBean.getName())
                 .version(osMXBean.getVersion())
@@ -44,7 +39,7 @@ public class SystemInfoService implements HealthIndicator {
 
     }
 
-    private static JavaInfo javaInfo() {
+    private JavaInfo javaInfo() {
 
         List<GarbageCollectorMXBean> gcMxBeans = ManagementFactory.getGarbageCollectorMXBeans();
 
@@ -69,24 +64,10 @@ public class SystemInfoService implements HealthIndicator {
                 .systemProperties(javaProperties);
     }
 
-    private static CpuInfo cpuInfo() {
+    private CpuInfo cpuInfo() {
         OperatingSystemMXBean osMXBean = ManagementFactory.getOperatingSystemMXBean();
         return new CpuInfo()
                 .processors(osMXBean.getAvailableProcessors());
     }
 
-    @Override
-    public Health isHealthy() {
-        Health health = new Health();
-        try {
-            SystemInfo systemInfo = getSystemInfo();
-            health.setStatus(HealthStatus.UP);
-            health.setDetails(systemInfo);
-        } catch (Exception e) {
-            logger.error("Problem retrieving system info", e);
-            health.setStatus(HealthStatus.DOWN);
-            health.setDetails(new HealthDetailsError(e.getMessage()));
-        }
-        return health;
-    }
 }
