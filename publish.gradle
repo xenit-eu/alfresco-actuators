@@ -1,50 +1,49 @@
-pluginManager.withPlugin('maven-publish') {
-    apply plugin: 'signing'
-    publishing {
-        repositories {
-            if ("${project.version}".endsWith('-SNAPSHOT')) {
-                sonatypeSnapshots {
-                    credentials {
-                        username = project.findProperty('publish_username')
-                        password = project.findProperty('publish_password')
-                    }
-                }
-            } else {
-                sonatypeMavenCentral {
-                    credentials {
-                        username = project.findProperty('publish_username')
-                        password = project.findProperty('publish_password')
-                    }
-                }
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+publishing {
+    repositories {
+        maven {
+            def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            url = version.toString().endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+
+            credentials {
+                username = project.findProperty('sonatype_username')
+                password = project.findProperty('sonatype_password')
             }
         }
-        publications {
-            all {
-                pom {
-                    url = 'https://github.com/xenit-eu/alfresco-actuators'
-                    name = "alfresco-actuators"
-                    description = project.description
+    }
+    publications {
+        all {
+            pom {
+                url = 'https://github.com/xenit-eu/alfresco-actuators'
+                name = "alfresco-actuators"
+                description = project.description
 
-                    scm {
-                        connection = 'scm:git:git@github.com:xenit-eu/alfresco-actuators.git'
-                        developerConnection = 'scm:git:git@github.com:xenit-eu/alfresco-actuators.git'
-                        url = 'https://github.com/xenit-eu/alfresco-actuators.git'
+                scm {
+                    connection = 'scm:git:git@github.com:xenit-eu/alfresco-actuators.git'
+                    developerConnection = 'scm:git:git@github.com:xenit-eu/alfresco-actuators.git'
+                    url = 'https://github.com/xenit-eu/alfresco-actuators.git'
+                }
+                developers {
+                    developer {
+                        id = "xenit"
+                        name = "Xenit Solutions NV"
                     }
-                    developers {
-                        developer {
-                            id = "xenit"
-                            name = "Xenit Solutions NV"
-                        }
-                    }
+                }
 
-                    licenses {
-                        license {
-                            name = 'GNU Lesser General Public License v3.0'
-                            url = 'https://www.gnu.org/licenses/lgpl-3.0.txt'
-                        }
+                licenses {
+                    license {
+                        name = 'GNU Lesser General Public License v3.0'
+                        url = 'https://www.gnu.org/licenses/lgpl-3.0.txt'
                     }
                 }
             }
         }
     }
+}
+signing {
+    required { !version.toString().endsWith("SNAPSHOT") }
+    useInMemoryPgpKeys(findProperty("signingKeyId"), findProperty("signingKey"), findProperty("signingPassword"))
+    sign publishing.publications
 }

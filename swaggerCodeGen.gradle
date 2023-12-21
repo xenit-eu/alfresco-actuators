@@ -1,0 +1,34 @@
+apply plugin: 'org.hidetake.swagger.generator'
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+
+dependencies {
+    // Add dependency for Swagger Codegen CLI
+    swaggerCodegen 'io.swagger:swagger-codegen-cli:2.2.3'
+
+}
+swaggerSources {
+    model {
+        inputFile = file("${rootProject.projectDir}/specifications/swagger.yaml")
+        code {
+            language = 'spring'
+            additionalProperties = [
+                    "modelPackage"     : "eu.xenit.actuators.model.gen",
+                    "serializableModel": "true"
+            ]
+            // Only generate model:
+            components = ['models']
+        }
+    }
+
+}
+compileJava.dependsOn generateSwaggerCodeModel
+sourceSets {
+    main {
+        java {
+            srcDirs = ["src/main/java", "$generateSwaggerCodeModel.outputDir/src/main/java"]
+        }
+    }
+}

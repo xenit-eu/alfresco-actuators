@@ -2,7 +2,6 @@ plugins {
     id 'java'
     id 'maven-publish'
     id 'eu.xenit.amp'
-    id 'org.hidetake.swagger.generator' version '2.19.2'
     id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
@@ -10,13 +9,10 @@ description = "Xenit webscripts to retrieve health of the application"
 
 // compile against alfresco 5.2
 ext {
-    alfrescoVersion = '5.2.7'
+    alfrescoVersion = '6.1.1.11'
     servletApiVersion = '2.5'
 }
 
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -25,57 +21,19 @@ java {
 }
 
 dependencies {
-    alfrescoProvided("org.alfresco:alfresco-repository:$alfrescoVersion")
-    alfrescoProvided("org.alfresco:alfresco-enterprise-repository:$alfrescoVersion")
-    alfrescoProvided("javax.servlet:servlet-api:$servletApiVersion")
+    alfrescoProvided platform("org.alfresco:acs-packaging:${alfrescoVersion}")
+    alfrescoProvided("org.alfresco:alfresco-repository")
+    alfrescoProvided("org.alfresco:alfresco-enterprise-repository")
 
-    // Add dependency for Swagger Codegen CLI
-    swaggerCodegen 'io.swagger:swagger-codegen-cli:2.2.3'
+    alfrescoProvided("javax.servlet:servlet-api:$servletApiVersion")
 
     compileOnly 'io.swagger:swagger-annotations:1.5.6'
     compileOnly 'javax.validation:validation-api:1.1.0.Final'
     compileOnly 'com.fasterxml.jackson.core:jackson-annotations:2.9.0'
 }
 
-swaggerSources {
+apply from: "${rootProject.projectDir}/swaggerCodeGen.gradle"
 
-    model {
-        inputFile = file("src/main/resources/swagger.yaml")
-        code {
-            language = 'spring'
-            additionalProperties = [
-                    "modelPackage"     : "eu.xenit.actuators.model.gen",
-                    "serializableModel": "true"
-            ]
-            // Only generate model:
-            components = ['models']
-        }
-    }
-
-}
-
-processResources {
-    filesMatching("**/module.properties") {
-        expand project.properties
-    }
-}
-
-sourceSets {
-    main {
-        java {
-            srcDirs = ["src/main/java", "$generateSwaggerCodeModel.outputDir/src/main/java"]
-        }
-        resources {
-            srcDirs = ['src/main/resources']
-        }
-        amp {
-            module("src/main/resources/alfresco/module/alfresco-actuators/module.properties")
-        }
-    }
-}
-
-
-compileJava.dependsOn generateSwaggerCodeModel
 
 publishing {
     publications {

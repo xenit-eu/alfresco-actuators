@@ -5,47 +5,81 @@ info:
   title: "Xenit System Information Module"
   contact:
     email: "engineering@xenit.eu"
-basePath: "/alfresco/s/xenit/api/v1/health"
+basePath: "/alfresco/s/xenit/actuators/health"
 tags:
-- name: "System"
-  description: "System information API"
+  - name: "System"
+    description: "System information API"
 schemes:
-- "http"
+  - "http"
 
 ##########################################################################
 #                 PATHS                                                  #
 ##########################################################################
 paths:
-  "/information":
+  "/":
     get:
       tags:
-      - "Health"
-      summary: "Retrieve health information of the system"
+        - "Health"
+      summary: "Retrieve health of the system"
       description: "Multiple status values can be provided with comma separated strings"
       operationId: "getHealthInfo"
       produces:
-      - "application/json"
+        - "application/json"
       responses:
         200:
           description: "successful operation"
           schema:
-            $ref: "#/definitions/HealthInfo"
-        400:
+            $ref: "#/definitions/HealthStatus"
+        500:
           description: "Invalid status value"
+          schema:
+            $ref: "#/definitions/HealthStatus"
+  "/details":
+    get:
+      tags:
+        - "Health"
+      summary: "Retrieve health information of the system"
+      description: "Multiple status values can be provided with comma separated strings"
+      operationId: "getHealthInfo"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/HealthInfo"
+        500:
+          description: "Failed to write Object"
 
 ##########################################################################
 #                 DEFINITIONS                                            #
 ##########################################################################
 definitions:
-# ROOT
+
+  # ROOT
+  HealthStatus:
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/StatusEnum'
+      message:
+        type: string
+
   HealthInfo:
     type: object
     properties:
-      system:
-        $ref: '#/definitions/SystemInfo'
-      alfresco:
-        $ref: '#/definitions/AlfrescoInfo'
-# SYSTEM
+      name:
+        type: string
+      status:
+        $ref: '#/definitions/StatusEnum'
+      error:
+        type: string
+      details:
+        type: object
+        additionalProperties: { }
+  # SYSTEM
   SystemInfo:
     type: object
     properties:
@@ -88,7 +122,14 @@ definitions:
         type: integer
         format: int32
         example: 4
-# ALFRESCO
+  ContentStoreInfo:
+    type: object
+    properties:
+      access-time:
+        type: integer
+        format: int64
+        example: 4
+  # ALFRESCO
   AlfrescoInfo:
     type: object
     properties:
@@ -153,3 +194,8 @@ definitions:
         type: boolean
       thumbnailGeneration:
         type: boolean
+  StatusEnum:
+    type: string
+    enum:
+      - UP
+      - DOWN

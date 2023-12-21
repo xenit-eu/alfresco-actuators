@@ -1,24 +1,33 @@
+
 plugins {
     id 'eu.xenit.docker-compose' version '5.3.2' apply false
+    id 'org.hidetake.swagger.generator' version '2.19.2' apply false
     id 'eu.xenit.alfresco' version "1.1.0"
     id 'be.vbgn.ci-detect' version '0.5.0'
-    id 'org.ajoberstar.reckon' version '0.16.1'
 }
 
-reckon {
-    snapshots()
-    calcStageFromProp()
-}
 
 subprojects {
     group = 'eu.xenit.alfresco-actuators'
 
     apply plugin: 'eu.xenit.alfresco'
-
+    version = '1.0.0'
+    boolean isRelease = ci.branch?.startsWith("release")
+    if (!isRelease) {
+        version += "-SNAPSHOT"
+    }
     repositories {
         mavenCentral()
-        alfrescoPublic()
-        alfrescoEnterprise()
+        maven {
+            url 'https://artifacts.alfresco.com/nexus/content/repositories/public/'
+        }
+        maven {
+            url 'https://artifacts.alfresco.com/nexus/content/groups/private'
+            credentials {
+                username project.property('org.alfresco.maven.nexus.username')
+                password project.property('org.alfresco.maven.nexus.password')
+            }
+        }
     }
 
     apply from: "${rootProject.projectDir}/publish.gradle"
