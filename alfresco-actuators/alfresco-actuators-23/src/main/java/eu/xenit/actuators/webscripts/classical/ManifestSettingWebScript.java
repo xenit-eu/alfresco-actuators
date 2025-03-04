@@ -1,10 +1,11 @@
 package eu.xenit.actuators.webscripts.classical;
 
 import eu.xenit.actuators.services.ManifestInfo;
-import javax.servlet.ServletContext;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WrappingWebScriptRequest;
 import org.springframework.extensions.webscripts.servlet.WebScriptServletRequest;
+
+import jakarta.servlet.ServletContext;
 
 public interface ManifestSettingWebScript {
 

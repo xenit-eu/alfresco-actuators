@@ -17,6 +17,7 @@ java {
 }
 
 dependencies {
+    implementation project(':alfresco-actuators')
     alfrescoProvided platform("org.alfresco:acs-packaging:${alfrescoVersion}")
     alfrescoProvided("org.alfresco:alfresco-repository")
     alfrescoProvided("org.alfresco:alfresco-enterprise-repository")
