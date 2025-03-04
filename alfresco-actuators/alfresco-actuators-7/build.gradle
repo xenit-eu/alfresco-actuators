@@ -5,12 +5,10 @@ plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
-// compile against alfresco 5.2
 ext {
     alfrescoVersion = '6.1.1.11'
     servletApiVersion = '2.5'
 }
-
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -22,7 +20,6 @@ dependencies {
     alfrescoProvided platform("org.alfresco:acs-packaging:${alfrescoVersion}")
     alfrescoProvided("org.alfresco:alfresco-repository")
     alfrescoProvided("org.alfresco:alfresco-enterprise-repository")
-
     alfrescoProvided("javax.servlet:servlet-api:$servletApiVersion")
 
     compileOnly 'io.swagger:swagger-annotations:1.5.6'
@@ -38,10 +35,3 @@ publishing {
         }
     }
 }
-
-allprojects {
-    description = "Xenit webscripts to retrieve health of the application"
-
-    apply from: "${rootProject.projectDir}/swaggerCodeGen.gradle"
-}
-
