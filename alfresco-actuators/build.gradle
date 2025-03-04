@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'maven-publish'
     id 'eu.xenit.amp'
+    id 'eu.xenit.alfresco'
     id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
@@ -43,5 +44,22 @@ allprojects {
     description = "Xenit webscripts to retrieve health of the application"
 
     apply from: "${rootProject.projectDir}/swaggerCodeGen.gradle"
+
+    System.out.println(sourceSets.getByName("main").getAllSource().srcDirs)
+
+    sourceSets {
+        main {
+            amp {
+//                config.srcDir("${project(':alfresco-actuators').projectDir}/src/main/amp/config")
+//                web.srcDir("${project(':alfresco-actuators').projectDir}/src/main/amp/web")
+                config {
+                    srcDir = "${project(':alfresco-actuators').projectDir}/src/main/amp/config"
+                }
+                web {
+                    srcDir = "${project(':alfresco-actuators').projectDir}/src/main/amp/web"
+                }
+            }
+        }
+    }
 }
 

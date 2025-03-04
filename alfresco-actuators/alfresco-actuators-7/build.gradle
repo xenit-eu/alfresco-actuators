@@ -10,6 +10,9 @@ ext {
     servletApiVersion = '2.5'
 }
 
+targetCompatibility = 8
+sourceCompatibility = 8
+
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     withJavadocJar()
