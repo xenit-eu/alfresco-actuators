@@ -30,7 +30,7 @@ jobs:
           arguments: :integration-tests:alfresco-${{ matrix.flavour }}-${{ matrix.version }}:integrationTest --parallel
       - name: 'Upload Test Reports'
         if: success() || failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-result-${{ matrix.flavour }}-${{ matrix.version }}
           path: /home/runner/**/build/reports
