@@ -49,14 +49,14 @@ allprojects {
 
     sourceSets {
         main {
-            amp {
+            register('amp') {
 //                config.srcDir("${project(':alfresco-actuators').projectDir}/src/main/amp/config")
 //                web.srcDir("${project(':alfresco-actuators').projectDir}/src/main/amp/web")
-                config {
-                    srcDir = "${project(':alfresco-actuators').projectDir}/src/main/amp/config"
+                java {
+                    srcDirs += files("${project(':alfresco-actuators').projectDir}/src/main/amp/config")
                 }
-                web {
-                    srcDir = "${project(':alfresco-actuators').projectDir}/src/main/amp/web"
+                resources {
+                    srcDirs += files("${project(':alfresco-actuators').projectDir}/src/main/amp/web")
                 }
             }
         }
