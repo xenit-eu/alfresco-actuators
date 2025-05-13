@@ -8,15 +8,21 @@ plugins {
 
 // compile against alfresco 5.2
 ext {
-    alfrescoVersion = '6.1.1.11'
-    servletApiVersion = '2.5'
+    alfrescoVersion = '23.2.2'
+    servletApiVersion = '5.0.0'
 }
 
+targetCompatibility = 17
+sourceCompatibility = 17
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_17
     withJavadocJar()
     withSourcesJar()
+}
+
+tasks.named("sourcesJar"){
+    dependsOn(tasks.named("generateSwaggerCodeModel"))
 }
 
 dependencies {
@@ -24,11 +30,12 @@ dependencies {
     alfrescoProvided("org.alfresco:alfresco-repository")
     alfrescoProvided("org.alfresco:alfresco-enterprise-repository")
 
-    alfrescoProvided("javax.servlet:servlet-api:$servletApiVersion")
+    alfrescoProvided("jakarta.servlet:jakarta.servlet-api:$servletApiVersion")
 
-    compileOnly 'io.swagger:swagger-annotations:1.5.6'
-    compileOnly 'javax.validation:validation-api:1.1.0.Final'
-    compileOnly 'com.fasterxml.jackson.core:jackson-annotations:2.9.0'
+    compileOnly 'jakarta.validation:jakarta.validation-api:3.0.2'
+    compileOnly 'jakarta.annotation:jakarta.annotation-api:3.0.0'
+    compileOnly 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.9'
+    compileOnly 'com.fasterxml.jackson.core:jackson-annotations:2.9.5'
 }
 
 publishing {
@@ -39,27 +46,9 @@ publishing {
         }
     }
 }
-
 allprojects {
-    description = "Xenit webscripts to retrieve health of the application"
-
-    apply from: "${rootProject.projectDir}/swaggerCodeGen.gradle"
-
-    System.out.println(sourceSets.getByName("main").getAllSource().srcDirs)
-
-    sourceSets {
-        main {
-            register('amp') {
-//                config.srcDir("${project(':alfresco-actuators').projectDir}/src/main/amp/config")
-//                web.srcDir("${project(':alfresco-actuators').projectDir}/src/main/amp/web")
-                java {
-                    srcDirs += files("${project(':alfresco-actuators').projectDir}/src/main/amp/config")
-                }
-                resources {
-                    srcDirs += files("${project(':alfresco-actuators').projectDir}/src/main/amp/web")
-                }
-            }
-        }
-    }
+   description = "Amp to add health check endpoint"
 }
+
+apply from: "${rootProject.projectDir}/swaggerCodeGen.gradle"
 
