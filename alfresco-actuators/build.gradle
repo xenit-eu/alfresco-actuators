@@ -8,12 +8,6 @@ plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2" apply false
 }
 
-// compile against alfresco 23.2
-//ext {
-//    alfrescoVersion = '23.2.2'
-//    servletApiVersion = '5.0.0'
-//}
-
 subprojects {
     apply plugin: 'eu.xenit.amp'
     apply plugin: 'eu.xenit.alfresco'
@@ -59,6 +53,15 @@ subprojects {
             mavenJava(MavenPublication) {
                 from components.java
                 artifact tasks.amp
+            }
+        }
+    }
+
+    sourceSets {
+        main {
+            amp {
+                config.srcDir("${project(':alfresco-actuators').projectDir}/src/main/amp/config")
+                web.srcDir("${project(':alfresco-actuators').projectDir}/src/main/amp/web")
             }
         }
     }
