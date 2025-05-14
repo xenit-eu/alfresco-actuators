@@ -8,6 +8,8 @@ plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2" apply false
 }
 
+description = "Amp to add health check endpoint"
+
 subprojects {
     apply plugin: 'eu.xenit.amp'
     apply plugin: 'eu.xenit.alfresco'
@@ -56,12 +58,18 @@ subprojects {
             }
         }
     }
-
+    
     sourceSets {
         main {
             amp {
                 config.srcDir("${project(':alfresco-actuators').projectDir}/src/main/amp/config")
                 web.srcDir("${project(':alfresco-actuators').projectDir}/src/main/amp/web")
+                module {
+                    it.put("module.id", project(':alfresco-actuators').name)
+                    it.put("module.title", project(':alfresco-actuators').name)
+                    it.put("module.description", project(':alfresco-actuators').getProperties().get("description"))
+                    it.put("module.version", project(':alfresco-actuators').version)
+                }
             }
         }
     }
