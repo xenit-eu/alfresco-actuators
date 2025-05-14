@@ -1,54 +1,65 @@
+import java.nio.file.Paths
+
 plugins {
     id 'java'
     id 'maven-publish'
-    id 'eu.xenit.amp'
-    id 'eu.xenit.alfresco'
-    id "com.github.johnrengelman.shadow" version "7.1.2"
+    id 'eu.xenit.amp' apply false
+    id 'eu.xenit.alfresco' apply false
+    id "com.github.johnrengelman.shadow" version "7.1.2" apply false
 }
 
-// compile against alfresco 5.2
-ext {
-    alfrescoVersion = '23.2.2'
-    servletApiVersion = '5.0.0'
-}
+// compile against alfresco 23.2
+//ext {
+//    alfrescoVersion = '23.2.2'
+//    servletApiVersion = '5.0.0'
+//}
 
-targetCompatibility = 17
-sourceCompatibility = 17
+subprojects {
+    apply plugin: 'eu.xenit.amp'
+    apply plugin: 'eu.xenit.alfresco'
+    apply plugin: 'com.github.johnrengelman.shadow'
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    withJavadocJar()
-    withSourcesJar()
-}
+    targetCompatibility = 17
+    sourceCompatibility = 17
 
-tasks.named("sourcesJar"){
-    dependsOn(tasks.named("generateSwaggerCodeModel"))
-}
+    System.out.println("project name: " + project.name)
+    String versionsGradlePath = Paths.get(project(":alfresco-actuators").projectDir.path, project.name, "versions.gradle")
+    System.out.println("versions.gradle path: " + versionsGradlePath)
+    apply from: versionsGradlePath
 
-dependencies {
-    alfrescoProvided platform("org.alfresco:acs-packaging:${alfrescoVersion}")
-    alfrescoProvided("org.alfresco:alfresco-repository")
-    alfrescoProvided("org.alfresco:alfresco-enterprise-repository")
+    description = "Amp to add health check endpoint"
 
-    alfrescoProvided("jakarta.servlet:jakarta.servlet-api:$servletApiVersion")
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        withJavadocJar()
+        withSourcesJar()
+    }
 
-    compileOnly 'jakarta.validation:jakarta.validation-api:3.0.2'
-    compileOnly 'jakarta.annotation:jakarta.annotation-api:3.0.0'
-    compileOnly 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.9'
-    compileOnly 'com.fasterxml.jackson.core:jackson-annotations:2.9.5'
-}
+    dependencies {
+        alfrescoProvided platform("org.alfresco:acs-packaging:${alfrescoVersion}")
+        alfrescoProvided("org.alfresco:alfresco-repository")
+        alfrescoProvided("org.alfresco:alfresco-enterprise-repository")
+        alfrescoProvided("jakarta.servlet:jakarta.servlet-api:$servletApiVersion")
+        alfrescoProvided 'jakarta.annotation:jakarta.annotation-api'
+        alfrescoProvided 'com.fasterxml.jackson.core:jackson-annotations'
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-            artifact tasks.amp
+        implementation platform("org.alfresco:acs-packaging:${alfrescoVersion}")
+        implementation "jakarta.validation:jakarta.validation-api:${jakartaValidationApi}"
+        implementation "io.swagger.core.v3:swagger-annotations-jakarta:${swaggerAnnotationsJakarta}"
+    }
+
+    apply from: "${rootProject.projectDir}/swaggerCodeGen.gradle"
+
+    tasks.named("sourcesJar"){
+        dependsOn(tasks.named("generateSwaggerCodeModel"))
+    }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+                artifact tasks.amp
+            }
         }
     }
 }
-allprojects {
-   description = "Amp to add health check endpoint"
-}
-
-apply from: "${rootProject.projectDir}/swaggerCodeGen.gradle"
-
