@@ -23,8 +23,6 @@ subprojects {
     System.out.println("versions.gradle path: " + versionsGradlePath)
     apply from: versionsGradlePath
 
-    description = "Amp to add health check endpoint"
-
     java {
         sourceCompatibility = JavaVersion.VERSION_17
         withJavadocJar()
@@ -58,9 +56,12 @@ subprojects {
             }
         }
     }
-    
+
+    System.out.println("java sources: " + sourceSets.getByName("main").java.srcDirs)
+
     sourceSets {
         main {
+            java.srcDirs "${project(':alfresco-actuators').projectDir}/src/main/java"
             amp {
                 config.srcDir("${project(':alfresco-actuators').projectDir}/src/main/amp/config")
                 web.srcDir("${project(':alfresco-actuators').projectDir}/src/main/amp/web")
