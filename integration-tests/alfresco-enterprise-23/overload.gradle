@@ -2,7 +2,7 @@ ext {
     alfrescoBaseWarBom = 'org.alfresco:acs-packaging:23.3.0'
     alfrescoBaseWar = 'org.alfresco:content-services@war'
     alfrescoBaseImage = 'xenit/alfresco-repository-skeleton:23.3.0'
-    alfrescoActuatorsProjectName = 'alfresco-actuators-alfresco-23_2'
+    alfrescoActuatorsProjectName = 'alfresco-actuators-alfresco-23'
 
     postgresImage = 'postgres:15.0'
 }
