@@ -2,8 +2,7 @@ rootProject.name = 'alfresco-actuators'
 
 // Alfresco Actuators implementation
 include ':alfresco-actuators'
-include ':alfresco-actuators:alfresco-actuators-alfresco-23'
-include ':alfresco-actuators:alfresco-actuators-alfresco-25'
+include ':alfresco-actuators:alfresco-actuators-alfresco'
 
 include ':integration-tests'
 ["23", "25"].each { version ->

@@ -6,6 +6,8 @@ services:
     ports:
       - "8080:8080"
       - "8000:8000"
+    depends_on:
+      - postgresql
     environment:
       - GLOBAL_local.transform.service.enabled=false
       - GLOBAL_legacy.transform.service.enabled=false
@@ -19,6 +21,8 @@ services:
     image: private.docker.xenit.eu/customer/xenit/alfresco-alf1/share:latest
     ports:
       - "8081:8080"
+    depends_on:
+      - alfresco
   postgresql:
     image: ${POSTGRES_IMAGE}
     environment:

@@ -70,6 +70,7 @@ subprojects {
                     it.put("module.title", project(':alfresco-actuators').name)
                     it.put("module.description", project(':alfresco-actuators').getProperties().get("description"))
                     it.put("module.version", project(':alfresco-actuators').version)
+                    it.put("module.repo.version.min", "23.0")
                 }
             }
         }

@@ -15,12 +15,12 @@ jobs:
         flavour: [ "community", "enterprise" ]
         version: [ "61", "62", "70", "71", "72", "73" ]
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
-      - name: Set up JDK 11
-        uses: actions/setup-java@cd89f46ac9d01407894225f350157564c9c7cee2 # v3
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
       - name: Login to Docker
         run: echo "${{ secrets.CLOUDSMITH_APIKEY }}" | docker login private.docker.xenit.eu --username "${{ secrets.CLOUDSMITH_USER }}" --password-stdin
       - name: Integration Test
@@ -40,12 +40,12 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{  startsWith(github.ref, 'refs/tags/v') }}
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
-      - name: Set up JDK 11
-        uses: actions/setup-java@cd89f46ac9d01407894225f350157564c9c7cee2 # v3
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
       - name: Add TAG_VERSION env property
         run: echo "TAG_VERSION=`echo ${GITHUB_REF#refs/tags/}`" >> $GITHUB_ENV
       - name: Publish

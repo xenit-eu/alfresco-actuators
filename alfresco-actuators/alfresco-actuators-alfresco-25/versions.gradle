@@ -1,6 +1,0 @@
-ext {
-    alfrescoVersion = '25.1.0'
-    servletApiVersion = '5.0.0'
-    jakartaValidationApi = '3.0.2'
-    swaggerAnnotationsJakarta = '2.2.9'
-}
