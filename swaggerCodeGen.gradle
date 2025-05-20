@@ -6,7 +6,7 @@ tasks.withType(JavaCompile) {
 
 dependencies {
     // Add dependency for Swagger Codegen CLI
-    swaggerCodegen 'io.swagger:swagger-codegen-cli:2.2.3'
+    swaggerCodegen 'io.swagger.codegen.v3:swagger-codegen-cli:3.0.61'
 
 }
 swaggerSources {
@@ -16,7 +16,8 @@ swaggerSources {
             language = 'spring'
             additionalProperties = [
                     "modelPackage"     : "eu.xenit.actuators.model.gen",
-                    "serializableModel": "true"
+                    "serializableModel": "true",
+                    "jakarta": "true"
             ]
             // Only generate model:
             components = ['models']

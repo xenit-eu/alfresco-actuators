@@ -13,24 +13,23 @@ jobs:
       fail-fast: false
       matrix:
         flavour: [ "community", "enterprise" ]
-        version: [ "61", "62", "70", "71", "72", "73" ]
+        version: [ "23", "25" ]
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
-      - name: Set up JDK 11
-        uses: actions/setup-java@cd89f46ac9d01407894225f350157564c9c7cee2 # v3
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
       - name: Login to Docker
         run: echo "${{ secrets.CLOUDSMITH_APIKEY }}" | docker login private.docker.xenit.eu --username "${{ secrets.CLOUDSMITH_USER }}" --password-stdin
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
       - name: Integration Test
-        uses: gradle/gradle-build-action@v2
-        with:
-          cache-read-only: false
-          arguments: :integration-tests:alfresco-${{ matrix.flavour }}-${{ matrix.version }}:integrationTest --parallel
+        run: ./gradlew :integration-tests:alfresco-${{ matrix.flavour }}-${{ matrix.version }}:integrationTest --parallel
       - name: 'Upload Test Reports'
         if: success() || failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-result-${{ matrix.flavour }}-${{ matrix.version }}
           path: /home/runner/**/build/reports
@@ -40,12 +39,12 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{  startsWith(github.ref, 'refs/tags/v') }}
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
-      - name: Set up JDK 11
-        uses: actions/setup-java@cd89f46ac9d01407894225f350157564c9c7cee2 # v3
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
       - name: Add TAG_VERSION env property
         run: echo "TAG_VERSION=`echo ${GITHUB_REF#refs/tags/}`" >> $GITHUB_ENV
       - name: Publish
@@ -54,6 +53,6 @@ jobs:
           ORG_GRADLE_PROJECT_sonatype_password: ${{ secrets.SONATYPE_S01_PASSWORD }}
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.MAVEN_CENTRAL_GPG_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MAVEN_CENTRAL_GPG_PASSWORD }}
-        run: ./gradlew publish --info
+        run: ./gradlew :alfresco-actuators:publish --info
 
 

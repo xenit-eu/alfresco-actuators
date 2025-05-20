@@ -1,48 +1,74 @@
+import java.nio.file.Paths
+
 plugins {
     id 'java'
     id 'maven-publish'
-    id 'eu.xenit.amp'
-    id "com.github.johnrengelman.shadow" version "7.1.2"
+    id 'eu.xenit.amp' apply false
+    id 'eu.xenit.alfresco' apply false
+    id "com.github.johnrengelman.shadow" version "7.1.2" apply false
 }
 
-description = "Xenit webscripts to retrieve health of the application"
+description = "Amp to add health check endpoint"
 
-// compile against alfresco 5.2
-ext {
-    alfrescoVersion = '6.1.1.11'
-    servletApiVersion = '2.5'
-}
+subprojects {
+    apply plugin: 'eu.xenit.amp'
+    apply plugin: 'eu.xenit.alfresco'
+    apply plugin: 'com.github.johnrengelman.shadow'
 
+    targetCompatibility = 17
+    sourceCompatibility = 17
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    withJavadocJar()
-    withSourcesJar()
-}
+    java.nio.file.Path versionsGradlePath = Paths.get(project(":alfresco-actuators").projectDir.path, project.name, "versions.gradle")
+    apply from: versionsGradlePath
 
-dependencies {
-    alfrescoProvided platform("org.alfresco:acs-packaging:${alfrescoVersion}")
-    alfrescoProvided("org.alfresco:alfresco-repository")
-    alfrescoProvided("org.alfresco:alfresco-enterprise-repository")
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        withJavadocJar()
+        withSourcesJar()
+    }
 
-    alfrescoProvided("javax.servlet:servlet-api:$servletApiVersion")
+    dependencies {
+        alfrescoProvided platform("org.alfresco:acs-packaging:${alfrescoVersion}")
+        alfrescoProvided("org.alfresco:alfresco-repository")
+        alfrescoProvided("org.alfresco:alfresco-enterprise-repository")
+        alfrescoProvided("jakarta.servlet:jakarta.servlet-api:$servletApiVersion")
+        alfrescoProvided 'jakarta.annotation:jakarta.annotation-api'
+        alfrescoProvided 'com.fasterxml.jackson.core:jackson-annotations'
 
-    compileOnly 'io.swagger:swagger-annotations:1.5.6'
-    compileOnly 'javax.validation:validation-api:1.1.0.Final'
-    compileOnly 'com.fasterxml.jackson.core:jackson-annotations:2.9.0'
-}
+        implementation platform("org.alfresco:acs-packaging:${alfrescoVersion}")
+        implementation "jakarta.validation:jakarta.validation-api:${jakartaValidationApi}"
+        implementation "io.swagger.core.v3:swagger-annotations-jakarta:${swaggerAnnotationsJakarta}"
+    }
 
-apply from: "${rootProject.projectDir}/swaggerCodeGen.gradle"
+    apply from: "${rootProject.projectDir}/swaggerCodeGen.gradle"
 
+    tasks.named("sourcesJar"){
+        dependsOn(tasks.named("generateSwaggerCodeModel"))
+    }
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-            artifact tasks.amp
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+                artifact tasks.amp
+            }
+        }
+    }
+
+    sourceSets {
+        main {
+            java.srcDirs "${project(':alfresco-actuators').projectDir}/src/main/java"
+            amp {
+                config.srcDir("${project(':alfresco-actuators').projectDir}/src/main/amp/config")
+                web.srcDir("${project(':alfresco-actuators').projectDir}/src/main/amp/web")
+                module {
+                    it.put("module.id", project(':alfresco-actuators').name)
+                    it.put("module.title", project(':alfresco-actuators').name)
+                    it.put("module.description", project(':alfresco-actuators').getProperties().get("description"))
+                    it.put("module.version", project(':alfresco-actuators').version)
+                    it.put("module.repo.version.min", "23.0")
+                }
+            }
         }
     }
 }
-
-
-

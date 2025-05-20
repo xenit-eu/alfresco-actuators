@@ -1,13 +1,14 @@
 package eu.xenit.actuators.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import jakarta.servlet.ServletContext;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.servlet.ServletContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ManifestInfo {
 
