@@ -3,6 +3,16 @@ title: Changelog - Alfresco Actuators
 
 # Alfresco Actuators Changelog
 
+## [1.0.0] - 2025-05-20
+
+### Added
+
+* [ISSUE #23](https://github.com/xenit-eu/alfresco-actuators/issues/23) Added support for Alfresco v23 and v25
+
+### Removed
+
+* [ISSUE #23](https://github.com/xenit-eu/alfresco-actuators/issues/23) Dropped support for Alfresco v6 and v7
+
 ## [0.3.0] - 2021-11-17
 
 ### Changed

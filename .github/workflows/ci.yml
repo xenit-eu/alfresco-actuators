@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         flavour: [ "community", "enterprise" ]
-        version: [ "61", "62", "70", "71", "72", "73" ]
+        version: [ "23", "25" ]
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 17
@@ -24,7 +24,7 @@ jobs:
       - name: Login to Docker
         run: echo "${{ secrets.CLOUDSMITH_APIKEY }}" | docker login private.docker.xenit.eu --username "${{ secrets.CLOUDSMITH_USER }}" --password-stdin
       - name: Integration Test
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v4
         with:
           cache-read-only: false
           arguments: :integration-tests:alfresco-${{ matrix.flavour }}-${{ matrix.version }}:integrationTest --parallel
