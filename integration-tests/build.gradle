@@ -81,7 +81,6 @@ subprojects {
         baseAlfrescoWar "${alfrescoBaseWar}"
         alfrescoAmp project(path: ":alfresco-actuators:${alfrescoActuatorsProjectName}", configuration: "amp")
         alfrescoSM 'org.postgresql:postgresql:42.2.6'
-//        alfrescoSM "org.orderofthebee.support-tools:support-tools-repo:1.2.0.0"
     }
 
     dockerAlfresco {
