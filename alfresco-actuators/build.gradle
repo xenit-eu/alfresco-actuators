@@ -1,3 +1,4 @@
+import java.nio.file.Files
 import java.nio.file.Paths
 
 plugins {
@@ -18,9 +19,7 @@ subprojects {
     targetCompatibility = 17
     sourceCompatibility = 17
 
-    System.out.println("project name: " + project.name)
-    String versionsGradlePath = Paths.get(project(":alfresco-actuators").projectDir.path, project.name, "versions.gradle")
-    System.out.println("versions.gradle path: " + versionsGradlePath)
+    java.nio.file.Path versionsGradlePath = Paths.get(project(":alfresco-actuators").projectDir.path, project.name, "versions.gradle")
     apply from: versionsGradlePath
 
     java {
