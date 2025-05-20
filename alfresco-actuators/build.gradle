@@ -18,6 +18,8 @@ subprojects {
     targetCompatibility = 17
     sourceCompatibility = 17
 
+    description = project(':alfresco-actuators').getProperties().get("description")
+
     java.nio.file.Path versionsGradlePath = Paths.get(project(":alfresco-actuators").projectDir.path, project.name, "versions.gradle")
     apply from: versionsGradlePath
 
