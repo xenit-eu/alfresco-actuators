@@ -3,7 +3,7 @@ title: Changelog - Alfresco Actuators
 
 # Alfresco Actuators Changelog
 
-## [1.0.0] - 2025-05-20
+## [1.1.0] - 2025-05-20
 
 ### Added
 
