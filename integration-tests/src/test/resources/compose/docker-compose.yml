@@ -18,7 +18,7 @@ services:
       - GLOBAL_jodconverter.enabled=false
       - JAVA_OPTS=-Xmx312M # results in about ~670MB memory in use
   share:
-    image: private.docker.xenit.eu/customer/xenit/alfresco-alf1/share:latest
+    image: docker.io/xenit/alfresco-share-community:23.1.0.1
     ports:
       - "8081:8080"
     depends_on:

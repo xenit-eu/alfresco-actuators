@@ -1,6 +1,6 @@
 
 plugins {
-    id 'eu.xenit.docker-compose' version '5.5.0' apply false
+    id 'eu.xenit.docker-compose' version '5.5.1' apply false
     id 'org.hidetake.swagger.generator' version '2.19.2' apply false
     id 'eu.xenit.alfresco' version "1.2.0"
     id 'eu.xenit.amp' version "1.2.0"
